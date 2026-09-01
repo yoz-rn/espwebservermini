@@ -13,7 +13,8 @@ String TaskManager::stateToString(eTaskState state) {
 }
 
 std::vector<TaskInfo> TaskManager::getAllTasks() {
-    /* pakai buffer statis (_taskStatusBuffer) yang sudah
+    /* @brief 
+     * pakai buffer statis (_taskStatusBuffer) yang sudah
      * disediakan sebagai member, dipakai ulang tiap panggilan — 
      * menghindari alokasi heap berulang tiap kali endpoint /api/tasks 
      * di-poll dari frontend.
