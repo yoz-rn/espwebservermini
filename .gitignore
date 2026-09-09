@@ -6,3 +6,4 @@
 
 include/secrets.h
 git_sync.sh
+/assets
