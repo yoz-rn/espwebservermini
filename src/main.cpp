@@ -22,13 +22,21 @@ void setup() {
   Serial.print("[Network] IP Access Point: ");
   Serial.println(myNetwork.getIP());
 
-  if(!LittleFS.begin()) {
+  if(!LittleFS.begin(true)) {
     Serial.println("[Main] FATAL: LittleFS gagal mount.");
     return;
   }
 
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(LittleFS, "/index.html", "text/html");
+  }
+  ); 
+    
+
   registerTaskRoutes(server, myTaskManager);
   server.serveStatic("/", LittleFS, "/");
+
+
 
   server.begin();
   Serial.println("[Server] HTTP Server berjalan di latar belakang.");
