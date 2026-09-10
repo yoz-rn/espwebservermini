@@ -26,6 +26,20 @@ void setup() {
     Serial.println("[Main] FATAL: LittleFS gagal mount.");
     return;
   }
+//   else {
+//     File root = LittleFS.open("/assets/");
+//     File file = root.openNextFile();
+//     Serial.println("--- Isi LittleFS ---");
+//     while(file){
+//     Serial.print("File: ");
+//     Serial.print(file.name());
+//     Serial.print(" | Ukuran: ");
+//     Serial.println(file.size());
+//     file = root.openNextFile();
+// }
+
+// Serial.println("--------------------");
+//   }
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(LittleFS, "/index.html", "text/html");

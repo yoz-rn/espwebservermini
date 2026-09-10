@@ -7,10 +7,30 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
         h1 { color: #007BFF; }
+        /* Tambahan style untuk ASCII Art agar monospaced dan rapi */
+        pre { background: #1e1e1e; color: #00FF00; padding: 15px; display: inline-block; text-align: left; border-radius: 5px; font-size: 12px; overflow-x: auto; max-width: 90%; }
     </style>
 </head>
 <body>
     <h1>Dashboard Miniserver</h1>
     <p>Hello World! File HTML ini disajikan melalui LittleFS.</p>
+    
+    <!-- Tempat di mana ASCII Art akan dimunculkan -->
+    <pre id="ascii-container">Memuat ASCII Art...</pre>
+
+    <script>
+        // Meminta file art.txt dari ESP32
+        fetch('/assets/esp32.txt')
+            .then(response => {
+                if (!response.ok) throw new Error("Gagal mengambil file");
+                return response.text(); // Browser otomatis mengekstrak Gzip di sini!
+            })
+            .then(data => {
+                document.getElementById('ascii-container').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('ascii-container').innerText = "Error: " + error;
+            });
+    </script>
 </body>
 </html>
