@@ -1,8 +1,10 @@
 #include "NetworkManager.h"
 
-NetworkManager::NetworkManager(const char* ssid, const char* password) {
+NetworkManager::NetworkManager(const char* ssid, const char* password, const char* sta_ssid, const char* sta_password) {
     _ssid = ssid;
     _password = password;
+    _sta_ssid = sta_ssid;
+    _sta_password = sta_password;
     _networkTaskHandle = NULL;
 }
 
@@ -49,6 +51,32 @@ bool NetworkManager::beginAP() {
     return true;
 }
 
+bool NetworkManager::beginSTA(unsigned long timeoutMs) {
+    Serial.println("STA Initializing...");
+    if (_sta_ssid == nullptr || strlen(_sta_ssid) == 0) {
+        Serial.println("STA ssid kosong, skip");
+        return false;
+    }
+    WiFi.begin(_sta_ssid, _sta_password);
+
+    unsigned long startAttempt = millis();
+    while(WiFi.status() != WL_CONNECTED) {
+        if (millis() - startAttempt > timeoutMs) {
+            Serial.println("STA timeout, gagal connect ke router");
+            return false;
+        }
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+    Serial.print("STA connected, IP: ");
+    Serial.println(WiFi.localIP());
+
+    MDNS.begin("esp32") ? Serial.println("mDNS responder aktif: http://esp32.local")
+                        : Serial.println("mDNS gagal start");
+
+    return true;
+
+}
+
 void NetworkManager::taskWrapper(void* _this) {
     NetworkManager* instance = static_cast<NetworkManager*>(_this);
     instance->taskLoop();
@@ -64,4 +92,8 @@ void NetworkManager::taskLoop() {
 
 IPAddress NetworkManager::getIP() {
     return WiFi.softAPIP();
+}
+
+IPAddress NetworkManager::getSTAIP() {
+    return WiFi.localIP();
 }
