@@ -7,6 +7,7 @@
 ![ROADMAP_PROJECT](roadmap-link.svg)
 
 - [ ] Landing Page Dashboard
+- [ ] LittleFS File Manager
 
 yeah well whatever
 

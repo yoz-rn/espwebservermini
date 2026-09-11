@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Setup</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
+        h1 { color: #007BFF; }
+        form { display: inline-block; text-align: left; }
+        label { display: block; margin-top: 12px; font-size: 14px; }
+        input { width: 250px; padding: 8px; margin-top: 4px; }
+        button { margin-top: 16px; padding: 8px 16px; }
+        #status { margin-top: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Hubungkan ke WiFi</h1>
+    <form id="wifi-form">
+        <label for="ssid">Nama WiFi (SSID)</label>
+        <input type="text" id="ssid" name="ssid" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+
+        <button type="submit">Hubungkan</button>
+    </form>
+    <div id="status"></div>
+
+    <script>
+        const form = document.getElementById('wifi-form');
+        const statusEl = document.getElementById('status');
+        const submitBtn = form.querySelector('button');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const ssid = document.getElementById('ssid').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            statusEl.textContent = 'Menghubungkan... (bisa sampai 10 detik)';
+            statusEl.style.color = 'black';
+
+            const body = new URLSearchParams();
+            body.append('ssid', ssid);
+            body.append('password', password);
+
+            fetch('/api/wifi-config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: body
+            })
+                .then(response => response.json())
+                .then(data => {
+                    statusEl.textContent = data.message;
+                    statusEl.style.color = data.success ? 'green' : 'red';
+                })
+                .catch(error => {
+                    statusEl.textContent = 'Error: ' + error.message;
+                    statusEl.style.color = 'red';
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                });
+        });
+    </script>  
+</body>
+</html>
+

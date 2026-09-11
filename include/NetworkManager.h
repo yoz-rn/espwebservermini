@@ -4,6 +4,7 @@
 #include <ESPmDNS.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <Preferences.h>
 
 class NetworkManager {
     private:
@@ -12,6 +13,8 @@ class NetworkManager {
 
     const char* _sta_ssid;
     const char* _sta_password;
+
+    Preferences _prefs;
 
     TaskHandle_t _networkTaskHandle;
 
@@ -26,6 +29,12 @@ class NetworkManager {
     
     bool beginAP();
     bool beginSTA(unsigned long timeoutMs = 10000);
+
+    bool saveSTACredentials(const String& ssid, const String& password);
+    bool hasSavedCredentials();
+    bool testSTACredentials(const String& ssid, const String& password, unsigned long timeoutMs = 10000);
+
+    void NVSTest();
     
     IPAddress getIP(); // harusnya pake const, nanti cek lagi
     IPAddress getSTAIP();

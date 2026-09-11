@@ -53,20 +53,17 @@ bool NetworkManager::beginAP() {
 
 bool NetworkManager::beginSTA(unsigned long timeoutMs) {
     Serial.println("STA Initializing...");
-    if (_sta_ssid == nullptr || strlen(_sta_ssid) == 0) {
-        Serial.println("STA ssid kosong, skip");
+
+    _prefs.begin("wifi-config", true); // read-0nly
+    String savedSsid = _prefs.getString("ssid", "");
+    String savedPassword = _prefs.getString("password", "");
+    _prefs.end();
+
+    if (!testSTACredentials(savedSsid, savedPassword, timeoutMs)) {
+        Serial.println("STA gagal connect ke router");
         return false;
     }
-    WiFi.begin(_sta_ssid, _sta_password);
-
-    unsigned long startAttempt = millis();
-    while(WiFi.status() != WL_CONNECTED) {
-        if (millis() - startAttempt > timeoutMs) {
-            Serial.println("STA timeout, gagal connect ke router");
-            return false;
-        }
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-    }
+    
     Serial.print("STA connected, IP: ");
     Serial.println(WiFi.localIP());
 
@@ -90,10 +87,57 @@ void NetworkManager::taskLoop() {
     }
 }
 
+bool NetworkManager::hasSavedCredentials() {
+    _prefs.begin("wifi-config", true); // read-0nly
+    String savedSsid = _prefs.getString("ssid", "");
+    _prefs.end();
+
+    return savedSsid.length() > 0;
+}
+
+bool NetworkManager::saveSTACredentials(const String& ssid, const String& password) {
+    _prefs.begin("wifi-config", false); //read-write
+    bool okSsid = _prefs.putString("ssid", ssid);
+    bool okPassword = _prefs.putString("password", password);
+    _prefs.end();
+
+    return okSsid && okPassword;
+}
+
+bool NetworkManager::testSTACredentials(const String& ssid, const String& password, unsigned long timeoutMs) {
+    if (ssid.length() == 0) return false;
+    
+    WiFi.mode(WIFI_AP_STA);
+    WiFi.begin(ssid.c_str(), password.c_str());
+
+    unsigned long startAttempt = millis();
+    while(WiFi.status() != WL_CONNECTED) {
+        if (millis() - startAttempt > timeoutMs) {
+            WiFi.disconnect(); return false;
+        }
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+    return true;
+}
+
 IPAddress NetworkManager::getIP() {
     return WiFi.softAPIP();
 }
 
 IPAddress NetworkManager::getSTAIP() {
     return WiFi.localIP();
+}
+
+void NetworkManager::NVSTest() {
+    // --- NVS TEST ---
+  Serial.println("[Test] Cek kredensial tersimpan...");
+  Serial.println(hasSavedCredentials() ? "Ada" : "Belum ada");
+
+  Serial.println("[Test] Simpan kredensial dummy...");
+  bool saved = saveSTACredentials("TestSSID", "TestPassword123");
+  Serial.println(saved ? "Berhasil disimpan" : "Gagal disimpan");
+
+  Serial.println("[Test] Cek ulang kredensial tersimpan...");
+  Serial.println(hasSavedCredentials() ? "Ada" : "Belum ada");
+  // --- ENDOF NVS TEST ---
 }

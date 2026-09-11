@@ -7,6 +7,7 @@
 #include "TaskManager.h"
 
 #include "routes/TaskRoutes.h"
+#include "routes/WifiRoutes.h"
 
 NetworkManager myNetwork(ssid, password, sta_ssid, sta_password);
 TaskManager myTaskManager;
@@ -15,6 +16,9 @@ AsyncWebServer server(80);
 
 void setup() {
   Serial.begin(115200);
+
+  
+
   if (!myNetwork.beginAP()) {
     Serial.println("[Main] FATAL: Network gagal, sistem tidak bisa lanjut.");
     return;
@@ -22,7 +26,6 @@ void setup() {
   Serial.print("[Network] IP Access Point: ");
   Serial.println(myNetwork.getIP());
 
-  WiFi.mode(WIFI_AP_STA);
   if (myNetwork.beginSTA()) {
     Serial.print("[Network] IP STA (router): ");
     Serial.println(myNetwork.getSTAIP());
@@ -54,6 +57,7 @@ Serial.println("--------------------");
     
 
   registerTaskRoutes(server, myTaskManager);
+  registerWifiRoutes(server, myNetwork);
   server.serveStatic("/", LittleFS, "/");
 
 
