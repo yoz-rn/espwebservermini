@@ -1,13 +1,21 @@
 # PROJECT SUMMARY
 
 > This project fills me with hope... and some other emotions that are weird and deeply confusing me. 
+How to interact with your ESP using webpage
+
+## Tech Stack
+
+Soon
 
 # ROADMAP
 
 ![ROADMAP_PROJECT](roadmap-link.svg)
 
-- [ ] Landing Page Dashboard
+- [ ] Wi-Fi Landing Page Dashboard
 - [ ] LittleFS File Manager
+- [ ] TUI-Style webpage
+- [ ] Use WebAssembly if possible
+- [ ] Fix Task Manager
 
 yeah well whatever
 
@@ -15,8 +23,8 @@ yeah well whatever
 
 ## Prerequisites
 
-* [VS Code]() + [PlatformIO]()
-* [Web Browser]()
+* [VS Code](https://code.visualstudio.com/) + [PlatformIO](https://platformio.org/platformio-ide)
+* [Web Browser](https://www.firefox.com/)
 
 ## Cloning the project
 1. Cloning the repository
@@ -49,6 +57,6 @@ yeah well whatever
 
 5. Flash the web
 
-    To upload the webpage, Use the `Upload Filesystem Image` button. This will upload all file and folders in the `data` folder to the esp.
+    To upload the webpage, Use the `Upload Filesystem Image` button. This will upload all file and folders in the `data` folder to the esp LittleFS partition.
 
 5. 

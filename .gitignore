@@ -6,4 +6,5 @@
 
 include/secrets.h
 git_sync.sh
-/assets
+assets/*.txt
+logs/*.log

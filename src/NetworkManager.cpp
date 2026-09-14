@@ -1,4 +1,15 @@
+/* THE MOST READABLE PIECE OF C++ CODE
+ * YOU WILL HAVE EVER SEEN
+ * (I'M GOING CLINICALLY INSANE)
+ */
+
 #include "NetworkManager.h"
+
+struct ProvisioningTaskParams {
+    NetworkManager* instance;
+    String ssid;
+    String password;
+};
 
 NetworkManager::NetworkManager(const char* ssid, const char* password, const char* sta_ssid, const char* sta_password) {
     _ssid = ssid;
@@ -6,6 +17,7 @@ NetworkManager::NetworkManager(const char* ssid, const char* password, const cha
     _sta_ssid = sta_ssid;
     _sta_password = sta_password;
     _networkTaskHandle = NULL;
+    _provisioningMutex = xSemaphoreCreateMutex();
 }
 
 bool NetworkManager::beginAP() {
@@ -26,7 +38,7 @@ bool NetworkManager::beginAP() {
         return false;
     }
 
-    WiFi.mode(WIFI_AP);
+    WiFi.mode(WIFI_AP_STA);
     if (!WiFi.softAP(_ssid, _password)) {
         Serial.println("softAP gagal");
         return false;
@@ -106,8 +118,7 @@ bool NetworkManager::saveSTACredentials(const String& ssid, const String& passwo
 
 bool NetworkManager::testSTACredentials(const String& ssid, const String& password, unsigned long timeoutMs) {
     if (ssid.length() == 0) return false;
-    
-    WiFi.mode(WIFI_AP_STA);
+
     WiFi.begin(ssid.c_str(), password.c_str());
 
     unsigned long startAttempt = millis();
@@ -120,12 +131,93 @@ bool NetworkManager::testSTACredentials(const String& ssid, const String& passwo
     return true;
 }
 
+bool NetworkManager::startSTAProvisioning(const String& ssid, const String& password) {
+    if (_provisioningStatus == ProvisioiningStatus::TESTING) {
+        Serial.println("[Provisioning] Sudah ada proses berjalan, tolak request baru");
+        return false;
+    }
+
+    xSemaphoreTake(_provisioningMutex, portMAX_DELAY);
+    _provisioningStatus = ProvisioiningStatus::TESTING;
+    _provisioningMessage = "Mnguji Koneksi";
+    xSemaphoreGive(_provisioningMutex);
+
+    ProvisioningTaskParams* params = new ProvisioningTaskParams{this, ssid, password};
+
+    BaseType_t result = xTaskCreatePinnedToCore(
+        NetworkManager::provisioningTaskWrapper,
+        "ProvisioningTask",
+        4096,
+        params,
+        1,
+        NULL,
+        1
+    );
+    if (result != pdPASS) {
+        Serial.println("[Provisioning] Gagal membuat task");
+        _provisioningStatus = ProvisioiningStatus::FAILED;
+        _provisioningMessage = "FAILED TO PROVIDE";
+        delete params;
+
+        return false;
+    }
+
+    return true;
+
+}
+
+void NetworkManager::provisioningTaskWrapper(void* pvParameters) {
+    ProvisioningTaskParams* params = static_cast<ProvisioningTaskParams*>(pvParameters);
+    NetworkManager* instance = params->instance;
+
+    Serial.printf("[Provisioning] Mulai validasi SSID: %s\n", params->ssid.c_str());
+
+    bool success = instance->testSTACredentials(params->ssid, params->password);
+
+    xSemaphoreTake(instance->_provisioningMutex, portMAX_DELAY);
+    if (success) {
+        instance->saveSTACredentials(params->ssid, params->password);
+        instance->_provisioningStatus = ProvisioiningStatus::SUCCESS;
+        instance->_provisioningMessage = "Berhasil terhubung";
+        Serial.println("[Provisioning] Sukses, kredensial disimpan.");
+    }
+    else {
+        instance->_provisioningStatus = ProvisioiningStatus::FAILED;
+        instance->_provisioningMessage = "Gagal Terhubung";
+        Serial.println("[Provisioning] Gagal.");
+    }
+    xSemaphoreGive(instance->_provisioningMutex);
+
+    delete params;
+    vTaskDelete(NULL);
+}
+
+
+/*
+ * GETTER
+ * SETTER
+ */
+
 IPAddress NetworkManager::getIP() {
     return WiFi.softAPIP();
 }
 
 IPAddress NetworkManager::getSTAIP() {
     return WiFi.localIP();
+}
+
+NetworkManager::ProvisioiningStatus NetworkManager::getProvisioningStatus() {
+    xSemaphoreTake(_provisioningMutex, portMAX_DELAY);
+    ProvisioiningStatus result = _provisioningStatus;
+    xSemaphoreGive(_provisioningMutex);
+    return result;
+}
+
+String NetworkManager::getProvisioningMessage() {
+    xSemaphoreTake(_provisioningMutex, portMAX_DELAY);
+    String result = _provisioningMessage;
+    xSemaphoreGive(_provisioningMutex);
+    return result;
 }
 
 void NetworkManager::NVSTest() {

@@ -3,11 +3,4 @@
 
 #include "NetworkManager.h"
 
-struct WifiTestParams {
-    AsyncWebServerRequest* request;
-    NetworkManager* networkManager;
-    String ssid;
-    String password;
-};
-
-void registerWifiRoutes(AsyncWebServer& server, NetworkManager& NetworkManager);
+void registerWifiRoutes(AsyncWebServer& server, NetworkManager& networkManager);
