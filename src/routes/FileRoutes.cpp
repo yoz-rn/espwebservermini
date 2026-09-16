@@ -37,77 +37,91 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
     });
     
     // Server API to CREATE UPDATE File
-    const size_t MAX_UPLOAD_SIZE = 25 * 1024;
+    // FileRoutes.cpp — tambahan di dalam registerFileRoutes()
 
-    server.on("api/files", HTTP_POST,
-        [&fileManager](AsyncWebServerRequest *request) {
+const size_t MAX_UPLOAD_SIZE = 25 * 1024; // 25 KB, sesuai kesepakatan
 
+// FileRoutes.cpp — ganti seluruh blok POST /api/files
+server.on("/api/files", HTTP_POST,
+    [](AsyncWebServerRequest *request) {
+        // Cuma jaring pengaman: kalau body kosong sama sekali, onBody gak akan pernah kepanggil
+        if (request->contentLength() == 0) {
+            request->send(400, "application/json", buildStatusJson(false, "No data file"));
+        }
+        // Kalau ada body, JANGAN kirim apa pun di sini — semua ditangani onBody
+    },
+    nullptr,
+    [&fileManager](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+
+        if (index == 0) {
+
+            Serial.printf("[Create] index=%u len=%u total=%u hasPath=%d hasOnConflict=%d\n",
+            index, len, total,
+            request->hasParam("path"),
+            request->hasParam("onConflict"));
+            // Validasi semua di sini, SEBELUM mulai nulis chunk apa pun
             if (!request->hasParam("path")) {
-                request->send(400, "application/json", buildStatusJson(false, "parameter path requierd"));
+                request->send(400, "application/json", buildStatusJson(false, "Parameter path required"));
                 return;
             }
-            String path = request->getParam("path")
-                                 ->value();
+            String path = request->getParam("path")->value();
 
-            size_t contentLength = request->contentLength();
-
-            if (contentLength > MAX_UPLOAD_SIZE) {
-                request->send(413, "application/json", buildStatusJson(false, "file exceed limit"));
+            if (total > MAX_UPLOAD_SIZE) {
+                request->send(413, "application/json", buildStatusJson(false, "File exceed limit (25 KB)"));
                 return;
             }
-            
+
             size_t freeSpace = LittleFS.totalBytes() - LittleFS.usedBytes();
             size_t margin = LittleFS.totalBytes() * 0.15;
-            size_t usableSpace = (freeSpace > margin) ? (freeSpace - margin)
-                                                      : 0;
-            if (contentLength > usableSpace) {
-                request->send(413, "application/json", buildStatusJson(false, "insufficient space"));
+            size_t usableSpace = (freeSpace > margin) ? (freeSpace - margin) : 0;
+
+            if (total > usableSpace) {
+                request->send(413, "application/json", buildStatusJson(false, "Insufficient space storage"));
                 return;
             }
 
             String finalPath = path;
+
             if (fileManager.fileExists(path)) {
-                String onConflict = request->hasParam("onConflict") ? request->getParam("onConflict")
-                                                                             ->value()
-                                                                    : "";
-                if (onConflict == "overwrite") finalPath == path;
-                else if (onConflict == "duplicate") {
+                String onConflict = request->hasParam("onConflict") ? request->getParam("onConflict")->value() : "";
+
+                if (onConflict == "overwrite") {
+                    finalPath = path;
+                } else if (onConflict == "duplicate") {
                     finalPath = fileManager.generateDuplicateName(path);
                     if (finalPath == "") {
-                        request->send(500, "application/json", buildStatusJson(false, "failed to duplicate"));
+                        request->send(500, "application/json", buildStatusJson(false, "Failed to duplicate"));
                         return;
                     }
-                }
-                else {
+                } else {
                     String output;
                     JsonDocument doc;
                     doc["success"] = false;
                     doc["conflict"] = true;
-                    doc["message"] = "File exist";  
+                    doc["message"] = "File sudah ada";
                     serializeJson(doc, output);
                     request->send(409, "application/json", output);
                     return;
-                    }
-                
+                }
             }
+
             if (!fileManager.beginWrite(finalPath)) {
-                request->send(500, "application/json", buildStatusJson(false, "failed to open file (to be written)"));
+                request->send(500, "application/json", buildStatusJson(false, "Failed to open and to write file"));
                 return;
             }
+        }
 
-        },
-        nullptr,
-        [&fileManager](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-            if (!fileManager.isWriteReady()) return;
+        if (!fileManager.isWriteReady()) return; // sudah ditolak di index==0, abaikan chunk sisanya
 
-            fileManager.writeChunk(data, len);
+        fileManager.writeChunk(data, len);
 
-            if (index + len == total) {
-                String writtenPath = fileManager.getWritePath();
-                fileManager.endWrite();
-                request->send(200, "application/json", buildStatusJson(true, "Upload success: " + writtenPath));
-            }
-        });
+        if (index + len == total) {
+            String writtenPath = fileManager.getWritePath();
+            fileManager.endWrite();
+            request->send(200, "application/json", buildStatusJson(true, "Upload success: " + writtenPath));
+        }
+    }
+);
 
     // Server API to LIST File
     server.on("/api/files", HTTP_GET, [&fileManager](AsyncWebServerRequest *request) {

@@ -11,7 +11,7 @@ void registerTaskRoutes(AsyncWebServer& server, TaskManager& taskManager) {
     });
 
     server.onNotFound([](AsyncWebServerRequest *request) {
-        request->send(404, "text/plain", "File tidak ada");
+        request->send(404, "text/plain", "File tidak ada\n");
     });
 
     server.serveStatic("/assets/", LittleFS, "/assets/")

@@ -6,6 +6,10 @@
 
 include/secrets.h
 git_sync.sh
-assets/*.txt
+assets/*
 logs/*.log
 data/assets/gz/*
+
+!assets/esp32.txt
+!assets/README.md
+!data/assets/gz/esp32.txt.gz
