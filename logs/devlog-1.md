@@ -90,3 +90,70 @@ Referensi untuk diseleksi mandiri ke roadmap:
 - [ ] Fitur "lupakan WiFi" — reset kredensial NVS tanpa reflash
 - [ ] Modul File Manager (lanjutan milestone berikutnya, `FileManager.h/.cpp` sudah ada di project)
 - [ ] Catatan post-mortem ringkas soal 3 insiden crash provisioning, untuk referensi cepat di modul lain
+
+## Lampiran
+
+### Struktur kode per devlog (lokal)
+
+```
+.
+├── assets
+│   ├── esp32.txt
+│   ├── hitori.txt
+│   ├── kita.txt
+│   ├── nijika.txt
+│   ├── ryo.txt
+│   └── taiga.txt
+├── data
+│   ├── assets
+│   │   ├── common.js
+│   │   ├── esp32.txt.gz
+│   │   ├── hitori.txt.gz
+│   │   ├── kita.txt.gz
+│   │   ├── nijika.txt.gz
+│   │   ├── ryo.txt.gz
+│   │   ├── style.css
+│   │   └── taiga.txt.gz
+│   ├── index.html
+│   └── wifi-setup.html
+├── git_sync.sh
+├── include
+│   ├── FileManager.h
+│   ├── NetworkManager.h
+│   ├── README
+│   ├── secrets.EXAMPLES.h
+│   ├── secrets.h
+│   └── TaskManager.h
+├── lib
+│   └── README
+├── LICENSE
+├── logs
+│   ├── device-monitor-260914-182529.log
+│   ├── device-monitor-260914-183819.log
+│   ├── device-monitor-260914-184948.log
+│   ├── device-monitor-260914-193303.log
+│   ├── device-monitor-260914-193501.log
+│   ├── device-monitor-260914-193913.log
+│   ├── device-monitor-260914-195202.log
+│   └── devlog-1.md
+├── platformio.ini
+├── README.md
+├── src
+│   ├── FileManager.cpp
+│   ├── main.cpp
+│   ├── NetworkManager.cpp
+│   ├── routes
+│   │   ├── ResponseHelper.cpp
+│   │   ├── ResponseHelper.h
+│   │   ├── TaskRoutes.cpp
+│   │   ├── TaskRoutes.h
+│   │   ├── WifiRoutes.cpp
+│   │   └── WifiRoutes.h
+│   └── TaskManager.cpp
+└── test
+    └── README
+```
+
+### Temuan Bug di next milestone
+
+* pake dns harus reset esp dlu

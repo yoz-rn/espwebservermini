@@ -17,14 +17,15 @@ struct TaskInfo {
 };
 
 class TaskManager{
-    private:
-
-    static const UBaseType_t MAX_TASKS = 32;
-    TaskStatus_t _taskStatusBuffer[MAX_TASKS];
-    String stateToString(eTaskState state);
     
     public:
     std::vector<TaskInfo> getAllTasks();
     String toJson();
+    
+    private:
+    static const UBaseType_t MAX_TASKS = 32;
+    TaskStatus_t _taskStatusBuffer[MAX_TASKS];
+    String stateToString(eTaskState state);
+    
     
 };

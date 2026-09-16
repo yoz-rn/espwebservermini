@@ -1,23 +1,31 @@
+// This include is for prebuilt library/registry
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 
+// This is the sub-system module
 #include "secrets.h"
 #include "NetworkManager.h"
 #include "TaskManager.h"
 
+// This is the API/routes
 #include "routes/TaskRoutes.h"
 #include "routes/WifiRoutes.h"
+#include "routes/FileRoutes.h"
 
-NetworkManager myNetwork(ssid, password, sta_ssid, sta_password);
-TaskManager myTaskManager;
+// 
+NetworkManager myNetwork(ssid, password);
+TaskManager myTask;
+FileManager myFile;
 
 AsyncWebServer server(80);
 
+
+/* Honestly, idk why this indent
+ * only use 2 spaces instead of 4
+ */
 void setup() {
   Serial.begin(115200);
-
-  
 
   if (!myNetwork.beginAP()) {
     Serial.println("[Main] FATAL: Network gagal, sistem tidak bisa lanjut.");
@@ -37,17 +45,10 @@ void setup() {
     return;
   }
   else {
-    File root = LittleFS.open("/assets/");
-    File file = root.openNextFile();
-    Serial.println("--- Isi LittleFS ---");
-    while(file){
-    Serial.print("File: ");
-    Serial.print(file.name());
-    Serial.print(" | Ukuran: ");
-    Serial.println(file.size());    file = root.openNextFile();
-}
-
-Serial.println("--------------------");
+    Serial.printf("[LittleFS] Total: %u bytes | Used: %u bytes | Free: %u bytes\n",
+              LittleFS.totalBytes(),
+              LittleFS.usedBytes(),
+              LittleFS.totalBytes() - LittleFS.usedBytes());
   }
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -56,8 +57,9 @@ Serial.println("--------------------");
   ); 
     
 
-  registerTaskRoutes(server, myTaskManager);
+  registerTaskRoutes(server, myTask);
   registerWifiRoutes(server, myNetwork);
+  registerFileRoutes(server, myFile);
   server.serveStatic("/", LittleFS, "/");
 
 

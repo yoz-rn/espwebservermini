@@ -11,11 +11,9 @@ struct ProvisioningTaskParams {
     String password;
 };
 
-NetworkManager::NetworkManager(const char* ssid, const char* password, const char* sta_ssid, const char* sta_password) {
+NetworkManager::NetworkManager(const char* ssid, const char* password) {
     _ssid = ssid;
     _password = password;
-    _sta_ssid = sta_ssid;
-    _sta_password = sta_password;
     _networkTaskHandle = NULL;
     _provisioningMutex = xSemaphoreCreateMutex();
 }

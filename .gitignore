@@ -8,3 +8,4 @@ include/secrets.h
 git_sync.sh
 assets/*.txt
 logs/*.log
+data/assets/gz/*

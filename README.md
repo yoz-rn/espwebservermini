@@ -1,23 +1,40 @@
+# PROJECT HEADER
+
+```
+                                                     █████                                                                                ███              ███ 
+                                                    ░░███                                                                                ░░░              ░░░  
+  ██████   █████  ████████  █████ ███ █████  ██████  ░███████   █████   ██████  ████████  █████ █████  ██████  ████████  █████████████   ████  ████████   ████ 
+ ███░░███ ███░░  ░░███░░███░░███ ░███░░███  ███░░███ ░███░░███ ███░░   ███░░███░░███░░███░░███ ░░███  ███░░███░░███░░███░░███░░███░░███ ░░███ ░░███░░███ ░░███ 
+░███████ ░░█████  ░███ ░███ ░███ ░███ ░███ ░███████  ░███ ░███░░█████ ░███████  ░███ ░░░  ░███  ░███ ░███████  ░███ ░░░  ░███ ░███ ░███  ░███  ░███ ░███  ░███ 
+░███░░░   ░░░░███ ░███ ░███ ░░███████████  ░███░░░   ░███ ░███ ░░░░███░███░░░   ░███      ░░███ ███  ░███░░░   ░███      ░███ ░███ ░███  ░███  ░███ ░███  ░███ 
+░░██████  ██████  ░███████   ░░████░████   ░░██████  ████████  ██████ ░░██████  █████      ░░█████   ░░██████  █████     █████░███ █████ █████ ████ █████ █████
+ ░░░░░░  ░░░░░░   ░███░░░     ░░░░ ░░░░     ░░░░░░  ░░░░░░░░  ░░░░░░   ░░░░░░  ░░░░░        ░░░░░     ░░░░░░  ░░░░░     ░░░░░ ░░░ ░░░░░ ░░░░░ ░░░░ ░░░░░ ░░░░░ 
+                  ░███                                                                                                                                         
+                  █████                                                                                                                                        
+                 ░░░░░                                                                                                                                         
+
+```
 # PROJECT SUMMARY
 
-> This project fills me with hope... and some other emotions that are weird and deeply confusing me. 
+> This project fills me with hope... and some other emotions that are weird and deeply confusing. 
+
 How to interact with your ESP using webpage
 
 ## Tech Stack
 
-Soon
+* PlatformIO
+* 
 
 # ROADMAP
 
 ![ROADMAP_PROJECT](roadmap-link.svg)
 
-- [ ] Wi-Fi Landing Page Dashboard
+- [x] Wi-Fi Landing Page Dashboard
 - [ ] LittleFS File Manager
 - [ ] TUI-Style webpage
 - [ ] Use WebAssembly if possible
 - [ ] Fix Task Manager
-
-yeah well whatever
+- [ ] Bikin game 
 
 # GETTING STARTED
 

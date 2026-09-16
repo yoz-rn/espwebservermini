@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test WASM</title>
+</head>
+<body>
+    <h1 id="output">Loading...</h1>
+
+    <script type="module">
+        import init, { greet } from '/pkg/rmatrix_wasm.js';
+
+        async function run() {
+            await init();
+            document.getElementById('output').textContent = greet();
+        }
+
+        run();
+    </script>
+</body>
+</html>

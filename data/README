@@ -1,0 +1,7 @@
+THIS `data` FOLDER WILL BE UPLOADED TO THE ESP FLASH MEMORY (LittleFS PARTITION)
+ENSURE A MAXIMUM FOLDER SIZE OF < 2 MB
+
+use `.avif` OR `.webp` for assets and textfile to `.gz`
+File size is the absoulte priority
+
+PROCEED W/ CAUTION

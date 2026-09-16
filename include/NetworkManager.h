@@ -18,9 +18,6 @@ class NetworkManager {
     const char* _ssid;
     const char* _password;
 
-    const char* _sta_ssid;
-    const char* _sta_password;
-
     Preferences _prefs;
 
     TaskHandle_t _networkTaskHandle;
@@ -35,10 +32,7 @@ class NetworkManager {
     static void provisioningTaskWrapper(void* pvParameters);
 
     public:
-    NetworkManager(const char* ssid,
-                    const char* password,
-                    const char* _sta_ssid,
-                    const char* _sta_password);
+    NetworkManager(const char* ssid, const char* password);
     
     bool beginAP();
     bool beginSTA(unsigned long timeoutMs = 10000);
