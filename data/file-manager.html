@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>file manager</title>
+    <link rel="stylesheet" href="assets/core/theme.css">
+    <link rel="stylesheet" href="assets/core/tui-base.css">
+    <link rel="stylesheet" href="assets/file-manager/file-manager.css">
+</head>
+<body>
+
+    <div class="tui-panel" data-label="path">
+        <span id="current-path">/</span>
+    </div>
+
+    <div class="tui-panel" data-label="files">
+        <table id="file-table">
+            <tbody>
+                <!-- baris file diisi JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tui-panel" data-label="preview">
+        <div id="preview-content">
+            <em>pilih file untuk melihat isi</em>
+        </div>
+    </div>
+
+    <div class="tui-panel" data-label="status">
+        <span id="status-message">ready</span>
+    </div>
+
+    <script src="assets/file-manager/file-manager.js"></script>
+</body>
+</html>

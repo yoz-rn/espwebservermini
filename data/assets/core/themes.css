@@ -1,0 +1,13 @@
+:root {
+    /* background */
+    --bg-main: #233637;
+
+    /* text */
+    --text-main: #B7EBEC;
+    --text-muted: #86B9BB;
+
+    /* accent & border */
+    --accent: #6E9BA4;
+    --border: #5F8484;
+    --border-active: #6E9BA4;
+}

@@ -17,7 +17,7 @@ static String statusToString( PStatus status) {
 void registerWifiRoutes(AsyncWebServer& server, NetworkManager& networkManager) {
     server.on("/api/wifi-config", HTTP_POST, [&networkManager](AsyncWebServerRequest *request) {
         if (!request->hasParam("ssid", true) || !request->hasParam("password", true)) {
-            request->send(400, "application/json", buildStatusJson(false, "SSID atau password tidak ada"));
+            request->send(400, APP_JSON, buildStatusJson(false, "SSID atau password tidak ada"));
             return;
         }
         
@@ -25,7 +25,7 @@ void registerWifiRoutes(AsyncWebServer& server, NetworkManager& networkManager) 
         const AsyncWebParameter* passwordParam = request->getParam("password", true);
 
         if (ssidParam == nullptr || passwordParam == nullptr) {
-            request->send(400, "application/json", buildStatusJson(false, "Gagal membaca SSID/Password"));
+            request->send(400, APP_JSON, buildStatusJson(false, "Gagal membaca SSID/Password"));
             return;
         }
 
@@ -34,8 +34,8 @@ void registerWifiRoutes(AsyncWebServer& server, NetworkManager& networkManager) 
 
         bool started = networkManager.startSTAProvisioning(ssid, password);
 
-        started ? request->send(200, "application/json", buildStatusJson(true, "proses validasi dimulai"))
-                : request->send(400, "application/json", buildStatusJson(false, "Proses provisioning lain sedang berjalan"));
+        started ? request->send(200, APP_JSON, buildStatusJson(true, "proses validasi dimulai"))
+                : request->send(400, APP_JSON, buildStatusJson(false, "Proses provisioning lain sedang berjalan"));
     });
 
     server.on("/api/wifi-status", HTTP_GET, [&networkManager](AsyncWebServerRequest *request) {
@@ -46,6 +46,6 @@ void registerWifiRoutes(AsyncWebServer& server, NetworkManager& networkManager) 
         String output;
         serializeJson(doc, output);
 
-        request->send(200, "application/json", output);
+        request->send(200, APP_JSON, output);
     });
 }

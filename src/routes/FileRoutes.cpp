@@ -7,22 +7,36 @@
 #include "FileRoutes.h"
 #include "ResponseHelper.h"
 
+namespace {
+    bool isPathSafe(const String& path) {
+        if (path.length() == 0) return false;
+        if (path.indexOf("..") != -1) return false;
+        return true;
+    }
+}
+
 void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
     
     // Server API to Read File
     server.on("/api/files/view", HTTP_GET, [&fileManager](AsyncWebServerRequest *request) {
         if (!request->hasParam("path")) {
-            request->send(400, "application/json", buildStatusJson(false, "parameter path required"));
+            request->send(400, APP_JSON, buildStatusJson(false, "parameter path required"));
             return;
         }
     
         String requestedPath = request->getParam("path")
                                       ->value();
+
+        if (!isPathSafe(requestedPath)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
+            return;
+        }
+
         String actualPath;
         bool isGzipped;
     
         if (!fileManager.resolveViewPath(requestedPath, actualPath, isGzipped)) {
-            request->send(404, "application/json", buildStatusJson(false, "File not found: " + requestedPath));
+            request->send(404, APP_JSON, buildStatusJson(false, "File not found: " + requestedPath));
             return;
         }
     
@@ -35,6 +49,56 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
     
     
     });
+
+    // Server API to RENAME/MOVE File or Directory
+    server.on("/api/files/rename", HTTP_PATCH, [&fileManager](AsyncWebServerRequest *request) {
+        if (!request->hasParam("path") || !request->hasParam("newPath")) {
+            request->send(400, APP_JSON, buildStatusJson(false, "parameter path and newPath required"));
+            return;
+        }
+
+        String oldPath = request->getParam("path")->value();
+        String newPath = request->getParam("newPath")->value();
+
+        if (!isPathSafe(oldPath) || !isPathSafe(newPath)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "Invalid path"));
+            return;
+        }
+
+        if (fileManager.fileExists(newPath) || fileManager.isDirectory(newPath)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "Target already exists: " + newPath));
+            return;
+        }
+
+        bool ok = fileManager.renamePath(oldPath, newPath);
+        request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "Renamed to: " + newPath
+                                                                       : "Failed to rename"));
+    });
+
+    // Server API to CREATE directory
+    server.on("/api/files/mkdir", HTTP_POST, [&fileManager](AsyncWebServerRequest *request) {
+        if (!request->hasParam("path")) {
+            request->send(400, APP_JSON, buildStatusJson(false, "parameter path required"));
+            return;
+        }
+
+        String path = request->getParam("path")->value();
+
+        if (!isPathSafe(path)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
+            return;
+        }
+
+        if (fileManager.fileExists(path) || fileManager.isDirectory(path)) {
+            request->send(409, APP_JSON, buildStatusJson(false, "Already exists: " + path));
+            return;
+        }
+
+        bool ok = fileManager.makeDirectory(path);
+        request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "Directory created: " + path
+                                                                       : "Failed to create directory"));
+
+    });
     
     // Server API to CREATE UPDATE File
     const size_t MAX_UPLOAD_SIZE = 25 * 1024; // 25 KB, sesuai kesepakatan
@@ -44,7 +108,7 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
         [](AsyncWebServerRequest *request) {
             // Cuma jaring pengaman: kalau body kosong sama sekali, onBody gak akan pernah kepanggil
             if (request->contentLength() == 0) {
-                request->send(400, "application/json", buildStatusJson(false, "No data file"));
+                request->send(400, APP_JSON, buildStatusJson(false, "No data file"));
             }
             // Kalau ada body, JANGAN kirim apa pun di sini — semua ditangani onBody
         },
@@ -59,13 +123,18 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                 request->hasParam("onConflict"));
                 // Validasi semua di sini, SEBELUM mulai nulis chunk apa pun
                 if (!request->hasParam("path")) {
-                    request->send(400, "application/json", buildStatusJson(false, "Parameter path required"));
+                    request->send(400, APP_JSON, buildStatusJson(false, "Parameter path required"));
                     return;
                 }
                 String path = request->getParam("path")->value();
 
+                if (!isPathSafe(path)) {
+                    request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
+                    return;
+                }
+
                 if (total > MAX_UPLOAD_SIZE) {
-                    request->send(413, "application/json", buildStatusJson(false, "File exceed limit (25 KB)"));
+                    request->send(413, APP_JSON, buildStatusJson(false, "File exceed limit (25 KB)"));
                     return;
                 }
 
@@ -74,7 +143,7 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                 size_t usableSpace = (freeSpace > margin) ? (freeSpace - margin) : 0;
 
                 if (total > usableSpace) {
-                    request->send(413, "application/json", buildStatusJson(false, "Insufficient space storage"));
+                    request->send(413, APP_JSON, buildStatusJson(false, "Insufficient space storage"));
                     return;
                 }
 
@@ -88,7 +157,7 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                     } else if (onConflict == "duplicate") {
                         finalPath = fileManager.generateDuplicateName(path);
                         if (finalPath == "") {
-                            request->send(500, "application/json", buildStatusJson(false, "Failed to duplicate"));
+                            request->send(500, APP_JSON, buildStatusJson(false, "Failed to duplicate"));
                             return;
                         }
                     } else {
@@ -98,13 +167,13 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                         doc["conflict"] = true;
                         doc["message"] = "File sudah ada";
                         serializeJson(doc, output);
-                        request->send(409, "application/json", output);
+                        request->send(409, APP_JSON, output);
                         return;
                     }
                 }
 
                 if (!fileManager.beginWrite(finalPath)) {
-                    request->send(500, "application/json", buildStatusJson(false, "Failed to open and to write file"));
+                    request->send(500, APP_JSON, buildStatusJson(false, "Failed to open and to write file"));
                     return;
                 }
             }
@@ -116,37 +185,42 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
             if (index + len == total) {
                 String writtenPath = fileManager.getWritePath();
                 fileManager.endWrite();
-                request->send(200, "application/json", buildStatusJson(true, "Upload success: " + writtenPath));
+                request->send(200, APP_JSON, buildStatusJson(true, "Upload success: " + writtenPath));
             }
         });
 
     // Server API to DELETE File/Directory
     server.on("/api/files", HTTP_DELETE, [&fileManager](AsyncWebServerRequest *request) {
         if (!request->hasParam("path")) {
-            request->send(400, "application/json", buildStatusJson(false, "parameter path required"));
+            request->send(400, APP_JSON, buildStatusJson(false, "parameter path required"));
             return;
         }
         String path = request->getParam("path")->value();
 
+        if (!isPathSafe(path)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
+            return;
+        }
+
         if (fileManager.isDirectory(path)) {
             if (!fileManager.isDirectoryEmpty(path)) {
-                request->send(409, "application/json", buildStatusJson(false, "Directory not empty"));
+                request->send(409, APP_JSON, buildStatusJson(false, "Directory not empty"));
                 return;
             }
             bool ok = fileManager.deleteDirectory(path);
-            request->send(ok ? 200 : 500, "application/json", buildStatusJson(ok, ok ? "Directory Deleted: " + path
+            request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "Directory Deleted: " + path
                                                                                      : "Failed to delete directory"));
             return;
         }
 
         if (!fileManager.fileExists(path)) {
-            request->send(404, "application/json", buildStatusJson(false, "File not found: " + path));
+            request->send(404, APP_JSON, buildStatusJson(false, "File not found: " + path));
             return;
         }
 
         bool ok = fileManager.deleteFile(path);
-        request->send(ok ? 200 : 500, "application/json", buildStatusJson(ok, ok ? "File deleted: " + path
-                                                                                 : "Failed to delete file"));
+        request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "File deleted: " + path
+                                                                       : "Failed to delete file"));
 
     });
 
@@ -156,19 +230,24 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
         ? request->getParam("path")->value() 
         : "/";
 
+        if (!isPathSafe(path)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
+            return;
+        }
+
         JsonDocument doc;
         JsonArray files = doc.to<JsonArray>();
 
         bool ok = fileManager.listDirectory(path, files);
 
         if (!ok) {
-            request->send(404, "application/json", buildStatusJson(false, "Direktori tidak ditemukan: " + path));
+            request->send(404, APP_JSON, buildStatusJson(false, "Direktori tidak ditemukan: " + path));
             return;
         }
 
         String output;
         serializeJson(doc, output);
-        request->send(200, "application/json", output);
+        request->send(200, APP_JSON, output);
     });
 
 }

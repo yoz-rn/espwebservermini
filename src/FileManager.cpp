@@ -1,6 +1,6 @@
 #include "FileManager.h"
 
-bool FileManager::listDirectory(const String& path, JsonArray& out) {
+bool FileManager::listDirectory(PATH, JsonArray& out) {
     File root = LittleFS.open(path);
 
     Serial.printf("[FileManager] path='%s' | root valid=%d | isDirectory=%d\n",
@@ -31,7 +31,7 @@ bool FileManager::listDirectory(const String& path, JsonArray& out) {
     
 }
 
-bool FileManager::fileExists(const String& path) {
+bool FileManager::fileExists(PATH) {
     File file = LittleFS.open(path);
     bool valid = file && !file.isDirectory();
     file.close();
@@ -55,7 +55,7 @@ bool FileManager::resolveViewPath(const String& requestedPath, String& actualPat
     return false;
 }
 
-String FileManager::generateDuplicateName(const String& path) {
+String FileManager::generateDuplicateName(PATH) {
     int lastSlash = path.lastIndexOf('/');
     int lastDot = path.lastIndexOf('.');
 
@@ -74,7 +74,7 @@ String FileManager::generateDuplicateName(const String& path) {
     return "";
 }
 
-bool FileManager::beginWrite(const String& path) {
+bool FileManager::beginWrite(PATH) {
     _writeFile = LittleFS.open(path, "w");
     if (!_writeFile) {
         _writeReady = false;
@@ -96,14 +96,14 @@ void FileManager::endWrite() {
     _writeReady = false;
 }
 
-bool FileManager::isDirectory(const String& path) {
+bool FileManager::isDirectory(PATH) {
     File file = LittleFS.open(path);
     bool result =   file && file.isDirectory();
     file.close();
     return result;
 }
 
-bool FileManager::isDirectoryEmpty(const String& path) {
+bool FileManager::isDirectoryEmpty(PATH) {
     File dir = LittleFS.open(path);
     if (!dir || !dir.isDirectory()) return false;
 
@@ -115,11 +115,11 @@ bool FileManager::isDirectoryEmpty(const String& path) {
     return empty;
 }
 
-bool FileManager::deleteFile(const String& path) {
+bool FileManager::deleteFile(PATH) {
     return LittleFS.remove(path);
 }
 
-bool FileManager::deleteDirectory(const String& path) {
+bool FileManager::deleteDirectory(PATH) {
     return LittleFS.rmdir(path);
 }
 
@@ -129,4 +129,12 @@ bool FileManager::isWriteReady() {
 
 String FileManager::getWritePath() {
     return _writePath;
+}
+
+bool FileManager::renamePath(const String& oldPath, const String& newPath) {
+    return LittleFS.rename(oldPath, newPath);
+}
+
+bool FileManager::makeDirectory(PATH) {
+    return LittleFS.mkdir(path);
 }
