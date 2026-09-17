@@ -20,6 +20,12 @@ class FileManager {
         bool fileExists(const String& path);
         bool resolveViewPath(const String& requestedPath, String& actualPath, bool& isGzipped);
 
+        // Delete Element
+        bool isDirectory(const String& path);
+        bool isDirectoryEmpty(const String& path);
+        bool deleteFile(const String& path);
+        bool deleteDirectory(const String& path);
+
     private:
         File _writeFile;
         String _writePath;

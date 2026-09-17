@@ -57,7 +57,7 @@ bool FileManager::resolveViewPath(const String& requestedPath, String& actualPat
 
 String FileManager::generateDuplicateName(const String& path) {
     int lastSlash = path.lastIndexOf('/');
-    int lastDot = path.indexOf('.');
+    int lastDot = path.lastIndexOf('.');
 
     bool hasExtension = (lastDot > lastSlash);
 
@@ -94,6 +94,33 @@ bool FileManager::writeChunk(uint8_t* data, size_t len) {
 void FileManager::endWrite() {
     _writeFile.close();
     _writeReady = false;
+}
+
+bool FileManager::isDirectory(const String& path) {
+    File file = LittleFS.open(path);
+    bool result =   file && file.isDirectory();
+    file.close();
+    return result;
+}
+
+bool FileManager::isDirectoryEmpty(const String& path) {
+    File dir = LittleFS.open(path);
+    if (!dir || !dir.isDirectory()) return false;
+
+    File entry = dir.openNextFile();
+    bool empty = !entry;
+
+    if (entry) entry.close();
+    dir.close();
+    return empty;
+}
+
+bool FileManager::deleteFile(const String& path) {
+    return LittleFS.remove(path);
+}
+
+bool FileManager::deleteDirectory(const String& path) {
+    return LittleFS.rmdir(path);
 }
 
 bool FileManager::isWriteReady() {

@@ -20,7 +20,7 @@
 
     <script>
         // Meminta file art.txt dari ESP32
-        fetch('/assets/esp32.txt')
+        fetch('/assets/gz/esp32.txt')
             .then(response => {
                 if (!response.ok) throw new Error("Gagal mengambil file");
                 return response.text(); // Browser otomatis mengekstrak Gzip di sini!

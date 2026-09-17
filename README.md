@@ -60,20 +60,28 @@ How to interact with your ESP using webpage
     * AP mode, treat the ESP as a router / access point
     * Station mode, treat the ESP as a device connected to the home network
 
+## Building and uploading the code
 
-3. Building the project
+1. Building the project
 
     Use the `Build` button or copy the command below
-    ```
-    platformio run # didn't work on my laptop, I'll try a different approach (much) later
-    ```
+    
 
-4. Uploading the project
+2. Uploading the project
 
     To flash the main code and embed it to the ESP, Use the `Upload` button
 
-5. Flash the web
+3. Flash the webpage
 
     To upload the webpage, Use the `Upload Filesystem Image` button. This will upload all file and folders in the `data` folder to the esp LittleFS partition.
 
-5. 
+## Access the dashboard
+
+1. Connect to your ESP using its AP Mode
+2. Copy the link below (by default, its IP is 192.168.1.254)
+
+    ```
+    http://192.168.1.254/index.html
+    ```
+
+3. You should see the main webpage with its pretty ASCII Art (courtesy to Letterpress from Flatpak, which is unfortunately is End of Life package)
