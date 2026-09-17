@@ -1,0 +1,103 @@
+.wifi-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+label {
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: var(--border-active);
+    outline: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+    background: var(--border);
+    color: var(--bg-main);
+}
+
+button[type="submit"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+#status {
+    margin-top: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    min-height: 24px;
+}
+
+/* Gaya untuk gambar vektor WiFi */
+.wifi-vector-img {
+    width: 150px; /* Sesuaikan ukuran vektor dengan keinginan Anda */
+    height: auto;
+    margin: 0 auto 1.5rem auto; /* Memberi jarak antara gambar dan form */
+    display: block;
+    /* Jika SVG Anda monokrom hitam dan ingin diubah menjadi warna tema (--text-main), 
+       Anda bisa menggunakan filter CSS atau membiarkannya jika SVG sudah berwarna */
+}
+
+/* =========================================
+   LAYOUT UTAMA & SIDEBAR RESPONSIVE
+   ========================================= */
+
+/* Penyesuaian panel khusus halaman ini agar tidak terlalu melar */
+.main-content .tui-panel {
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem 0; /* Menghilangkan margin auto horizontal bawaan dashboard */
+}
+
+/* Mode Mobile (Android) */
+@media (max-width: 768px) {
+    .main-content {
+        /* Sidebar disembunyikan di kiri, margin dinormalkan */
+        margin-left: 0; 
+        padding-top: 3rem; /* Memberi ruang untuk tombol toggle (☰) di atas */
+    }
+}

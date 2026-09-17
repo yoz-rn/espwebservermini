@@ -4,139 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WiFi Setup</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
-        h1 { color: #007BFF; }
-        form { display: inline-block; text-align: left; }
-        label { display: block; margin-top: 12px; font-size: 14px; }
-        input { width: 250px; padding: 8px; margin-top: 4px; }
-        button { margin-top: 16px; padding: 8px 16px; }
-        #status { margin-top: 16px; font-weight: bold; }
-    </style>
+    
+    <!-- Memanggil CSS Tema Utama & Komponen -->
+    <link rel="stylesheet" href="assets/core/theme.css">
+    <link rel="stylesheet" href="assets/core/tui-base.css">
+    <link rel="stylesheet" href="assets/core/sidebar.css">
+    <link rel="stylesheet" href="assets/wifi-setup/wifi-setup.css">
 </head>
 <body>
-    <h1>Hubungkan ke WiFi</h1>
 
-    <pre id="ascii-container">Memuat ASCII Art...</pre>
+    <!-- Tombol Toggle Sidebar (Hanya terlihat di Mobile) -->
+    <button id="sidebar-toggle">☰</button>
 
-    <form id="wifi-form">
-        <label for="ssid">Nama WiFi (SSID)</label>
-        <input type="text" id="ssid" name="ssid" required>
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+        <!-- Aset dashboard.svg adalah placeholder menunggu aset dari Anda -->
+        <a href="/index.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/dashboard.svg')"></span>
+            <span class="label">Dashboard</span>
+        </a>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password">
+        <a href="/wifi-setup.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/wifi.svg')"></span>
+            <span class="label">WiFi Setup</span>
+        </a>
 
-        <button type="submit">Hubungkan</button>
-    </form>
-    <div id="status"></div>
+        <a href="/file-manager.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/file-manager.svg')"></span>
+            <span class="label">File Manager</span>
+        </a>
 
-    <script>
+        <span class="sidebar-item disabled">
+            <span class="icon" style="--icon-url: url('/assets/icons/task-manager.svg')"></span>
+            <span class="label">Task Manager</span>
+        </span>
 
-        fetch('/assets/taiga.txt')
-            .then(response => {
-                if (!response.ok) throw new Error("Gagal mengambil file");
-                return response.text(); // Browser otomatis mengekstrak Gzip di sini!
-            })
-            .then(data => {
-                console.log(data.length);
-                console.log(data.slice(0,100));
-                document.getElementById('ascii-container').innerText = data;
-            })
-            .catch(error => {
-                document.getElementById('ascii-container').innerText = "Error: " + error;
-            });
+        <span class="sidebar-item disabled">
+            <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
+            <span class="label">Game</span>
+        </span>
+    </nav>
 
-        const form = document.getElementById('wifi-form');
-        const statusEl = document.getElementById('status');
-        const submitBtn = form.querySelector('button');
+    <!-- Wrapper Konten Utama -->
+    <main class="main-content">
+        <div class="tui-panel" data-label="wifi setup">
+            <div class="wifi-container">
+                <img src="/assets/wifi-setup/masha-wifi.svg" class="wifi-vector-img" alt="WiFi Login Vector">
 
-        let pollTimer = null;
+                <form id="wifi-form">
+                    <label for="ssid">Nama WiFi (SSID)</label>
+                    <input type="text" id="ssid" name="ssid" autocomplete="off" required>
 
-        function stopPolling() {
-            if (pollTimer) {
-                clearInterval(pollTimer);
-                pollTimer = null;
-            }
-            submitBtn.disabled = false;
-        }
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password">
 
-        function pollStatus() {
-            fetch('/api/wifi-status')
-                .then(response => response.text())
-                .then(text => {
-                    let data;
-                    try {
-                        data = JSON.parse(text);
-                    }
-                    catch (err) {
-                        console.error('Raw response gagal di-parse:', text);   // BARU — log body mentah ke console
-                        statusEl.textContent = 'Error parsing (cek console): ' + text.substring(0, 100);
-                        statusEl.style.color = 'red';
-                        stopPolling();
-                        return;
-                    }
+                    <button type="submit">Hubungkan</button>
+                    <div id="status"></div>
+                </form>
+            </div>
+        </div>
+    </main>
 
-                    // Penting: string di bawah ini HARUS sama persis dengan
-                    // statusToString() di WifiRoutes.cpp
-                    if (data.status === 'SUCCESS') {
-                        statusEl.textContent = data.message;
-                        statusEl.style.color = 'green';
-                        stopPolling();
-                    } else if (data.status === 'FAILED') {
-                        statusEl.textContent = data.message;
-                        statusEl.style.color = 'red';
-                        stopPolling();
-                    } else if (data.status === 'TESTING') {
-                        statusEl.textContent = data.message;
-                        statusEl.style.color = 'black';
-                        // tetap polling, belum selesai
-                    }
-                })
-                .catch(error => {
-                    statusEl.textContent = 'Error saat cek status: ' + error.message;
-                    statusEl.style.color = 'red';
-                    stopPolling();
-                });
-        }
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const ssid = document.getElementById('ssid').value;
-            const password = document.getElementById('password').value;
-
-            submitBtn.disabled = true;
-            statusEl.textContent = 'Mengirim...';
-            statusEl.style.color = 'black';
-
-            const body = new URLSearchParams();
-            body.append('ssid', ssid);
-            body.append('password', password);
-
-            fetch('/api/wifi-config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: body
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.success) {
-                        statusEl.textContent = data.message;
-                        statusEl.style.color = 'red';
-                        submitBtn.disabled = false;
-                        return;
-                    }
-                    statusEl.textContent = data.message;
-                    pollTimer = setInterval(pollStatus, 1500);
-                })
-                .catch(error => {
-                    statusEl.textContent = 'Error: ' + error.message;
-                    statusEl.style.color = 'red';
-                    submitBtn.disabled = false;
-                });
-        });
-
-    </script>  
+    <!-- Memanggil Script -->
+    <script src="assets/core/sidebar.js"></script> <!-- Tambahkan sidebar.js -->
+    <script src="assets/wifi-setup/wifi-setup.js"></script>
 </body>
 </html>
-

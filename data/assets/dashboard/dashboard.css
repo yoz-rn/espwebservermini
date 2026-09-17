@@ -2,22 +2,65 @@
    (single-shape, satu warna), soalnya warnanya diambil dari
    CSS via mask-image, bukan dari isi file SVG itu sendiri */
 
+/* =========================================
+   PENYESUAIAN PANEL UTAMA (BARU)
+   ========================================= */
+
+/* 1. Pindahkan isi panel dashboard miniserver ke tengah */
+.tui-panel[data-label="dashboard miniserver"] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#ascii-container {
+    margin: 0 auto;
+}
+
+/* 3. Tambahkan border, margin, dan padding pada semua panel */
+.tui-panel {
+    margin: 2rem auto;
+    padding: 3rem 2.5rem;
+    border: 2px solid var(--border, #888); /* Border dipertebal menjadi 2px */
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* 4. Besarkan ukuran font setiap nama panel */
+.tui-panel::before {
+    font-size: 1.3rem; /* Membesarkan judul panel (data-label) */
+    font-weight: bold;
+    padding: 0 0.5rem;
+}
+
+
+/* =========================================
+   PENYESUAIAN GRID & TOMBOL (MODIFIKASI)
+   ========================================= */
+
+/* REMINDER: semua file di assets/icons/*.svg harus monokrom
+   (single-shape, satu warna), soalnya warnanya diambil dari
+   CSS via mask-image, bukan dari isi file SVG itu sendiri */
+
 .feature-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 2.5rem; /* Gap (margin antar tombol menu) diperbesar dari 1rem */
 }
 
 .feature-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1.5rem;
-    border: 1px solid var(--border);
+    gap: 1.5rem;
+    padding: 3rem; /* Padding dalam tombol diperbesar drastis dari 1.5rem */
+    border: 2px solid var(--border); /* Border tombol dipertebal */
     text-decoration: none;
     color: var(--text-main);
     position: relative;
+    border-radius: 4px;
 }
 
 .feature-btn:hover {
@@ -26,15 +69,24 @@
     color: var(--bg-main);
 }
 
+/* 2. Besarkan panel menu agar logo setidaknya terlihat 50% dari ASCII ESP */
 .feature-btn .icon {
-    width: 48px;
-    height: 48px;
+    width: 150px; /* Logo dibesarkan secara signifikan dari 48px */
+    height: 150px; /* Logo dibesarkan secara signifikan dari 48px */
     background-color: currentColor;
     -webkit-mask-image: var(--icon-url);
     mask-image: var(--icon-url);
     mask-size: contain;
     mask-repeat: no-repeat;
     mask-position: center;
+}
+
+/* 4. Besarkan teks di dalam tombol menu */
+.feature-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .feature-btn.disabled {
@@ -44,8 +96,8 @@
 
 .feature-btn .badge {
     position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
-    font-size: 0.65rem;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.85rem; /* Font badge sedikit dibesarkan */
     color: var(--text-muted);
 }

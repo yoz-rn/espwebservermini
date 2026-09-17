@@ -113,7 +113,11 @@ for i in "${!files[@]}"; do
         if [ $? -eq 0 ]; then
             mv "$filepath.gz" "$DEST_DIR/"
             
-            # Mengambil ukuran file hasil kompresi dalam satuan byte
+            # Memaksimalkan kompresi dengan advdef setelah file dipindahkan
+            echo "   Mengoptimasi ukuran dengan advdef..."
+            advdef -z -4 "$destpath" > /dev/null 2>&1
+            
+            # Mengambil ukuran file hasil kompresi dalam satuan byte (setelah advdef)
             size_after=$(stat -c%s "$destpath")
             
             # Menghitung persentase penghematan memori

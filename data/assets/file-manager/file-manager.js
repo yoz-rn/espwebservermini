@@ -337,4 +337,17 @@ document.getElementById("btn-rename").addEventListener("click", async () => {
     }
 });
 
+// Memuat ASCII Art untuk panel System di kiri bawah
+fetch('/assets/file-manager/maria-system.txt')
+    .then(response => {
+        if (!response.ok) throw new Error("Gagal mengambil file");
+        return response.text();
+    })
+    .then(data => {
+        document.getElementById('fm-ascii').innerText = data;
+    })
+    .catch(error => {
+        document.getElementById('fm-ascii').innerText = "Error: " + error.message;
+    });
+
 loadFiles();
