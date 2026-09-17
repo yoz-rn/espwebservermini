@@ -9,8 +9,20 @@
 </head>
 <body>
 
+    <button id="sidebar-toggle" aria-label="toggle menu">☰</button>
+
+    <nav id="sidebar">
+        <a href="/" data-page="dashboard">dashboard</a>
+        <a href="/wifi-setup.html" data-page="wifi">wifi</a>
+        <a href="/file-manager.html" data-page="file-manager">file manager</a>
+        <span class="disabled">task manager</span>
+        <span class="disabled">game</span>
+    </nav>
+
     <div class="tui-panel" data-label="path">
         <span id="current-path">/</span>
+        <input type="file" id="upload-input">
+        <button id="btn-mkdir">📁</button>
     </div>
 
     <div class="tui-panel" data-label="files">
@@ -20,15 +32,17 @@
             </tbody>
         </table>
     </div>
+    
+    <div class="tui-panel" data-label="status">
+        <span id="status-message">ready</span>
+        <button id="btn-rename">✏️</button>
+        <button id="btn-delete">🗑️</button>
+    </div>
 
     <div class="tui-panel" data-label="preview">
         <div id="preview-content">
             <em>pilih file untuk melihat isi</em>
         </div>
-    </div>
-
-    <div class="tui-panel" data-label="status">
-        <span id="status-message">ready</span>
     </div>
 
     <script src="assets/file-manager/file-manager.js"></script>

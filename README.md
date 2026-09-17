@@ -34,7 +34,7 @@ How to interact with your ESP using webpage
 - [ ] TUI-Style webpage
 - [ ] Use WebAssembly if possible
 - [ ] Fix Task Manager
-- [ ] Bikin game 
+- [ ] Bikin game (tetris + snek (+ musik 8 bit))
 
 # GETTING STARTED
 

@@ -1,0 +1,31 @@
+#file-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#file-table tr {
+    cursor: pointer;
+}
+
+#file-table tr:hover {
+    background: var(--border);
+    color: var(--bg-main);
+}
+
+#file-table td {
+    padding: 0.3em 0.6em;
+}
+
+#file-table tr.selected {
+    background: var(--accent);
+    color: var(--bg-main);
+}
+
+body.busy {
+    cursor: wait;
+}
+
+body.busy #file-table {
+    opacity: 0.6;
+    pointer-events: none;
+}

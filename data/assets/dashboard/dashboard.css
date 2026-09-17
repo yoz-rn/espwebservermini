@@ -1,0 +1,51 @@
+/* REMINDER: semua file di assets/icons/*.svg harus monokrom
+   (single-shape, satu warna), soalnya warnanya diambil dari
+   CSS via mask-image, bukan dari isi file SVG itu sendiri */
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.feature-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text-main);
+    position: relative;
+}
+
+.feature-btn:hover {
+    border-color: var(--border-active);
+    background: var(--border);
+    color: var(--bg-main);
+}
+
+.feature-btn .icon {
+    width: 48px;
+    height: 48px;
+    background-color: currentColor;
+    -webkit-mask-image: var(--icon-url);
+    mask-image: var(--icon-url);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+
+.feature-btn.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.feature-btn .badge {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
