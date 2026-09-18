@@ -1,6 +1,6 @@
 #pragma once
-#include <ESPAsyncWebServer.h>
 
 #include "NetworkManager.h"
+#include "ResponseHelper.h"
 
 void registerWifiRoutes(AsyncWebServer& server, NetworkManager& networkManager);

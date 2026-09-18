@@ -20,7 +20,8 @@ static const MimeMapping mimeTable[] = {
     { ".jpeg", "image/jpeg" },
     { ".svg",  "image/svg+xml" },
     { ".webp", "image/webp" },
-    { ".avif", "image/avif" }
+    { ".avif", "image/avif" },
+    { ".wasm", "application/wasm"}
 };
 
 

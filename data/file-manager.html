@@ -39,10 +39,10 @@
             <span class="label">Task Manager</span>
         </span>
 
-        <span class="sidebar-item disabled">
+        <a href="/game.html" class="sidebar-item">
             <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
             <span class="label">Game</span>
-        </span>
+        </a>
     </nav>
 
     <!-- Wrapper Konten Utama -->
@@ -52,15 +52,21 @@
         <div class="file-manager-grid">
             
             <!-- Panel Kiri: Navigasi File -->
-            <div class="fm-left-col">
-                <div class="tui-panel" data-label="path">
-                    <span id="current-path">/</span>
-                    <div class="fm-actions">
-                        <input type="file" id="upload-input">
-                        <button id="btn-mkdir">📁</button>
-                    </div>
-                </div>
+            <div class="tui-panel fm-path-panel" data-label="path">
+                <div class="fm-actions">
+                    <label for="upload-input" class="action-btn" title="Upload File">
+                        <span class="icon" style="--icon-url: url('/assets/file-manager/icons/upload.svg')"></span>
+                    </label>
+                    <input type="file" id="upload-input" style="display: none;">
 
+                    <button id="btn-mkdir" class="action-btn" title="Buat Folder">
+                        <span class="icon" style="--icon-url: url('/assets/file-manager/icons/mkdir.svg')"></span>
+                    </button>
+                </div>
+                <span id="current-path">/</span>
+            </div>
+                
+            <div class="fm-left-col">
                 <div class="tui-panel fm-table-panel" data-label="files">
                     <div class="fm-table-scroll">
                         <table id="file-table">
@@ -70,10 +76,14 @@
                 </div>
                 
                 <div class="tui-panel" data-label="status">
-                    <span id="status-message">ready</span>
+                    <span id="status-message">when yh</span>
                     <div class="fm-actions">
-                        <button id="btn-rename">✏️</button>
-                        <button id="btn-delete">🗑️</button>
+                        <button id="btn-rename" class="action-btn" title="Ganti Nama">
+                            <span class="icon" style="--icon-url: url('/assets/file-manager/icons/rename.svg')"></span>
+                        </button>
+                        <button id="btn-delete" class="action-btn" title="Hapus">
+                            <span class="icon" style="--icon-url: url('/assets/file-manager/icons/delete.svg')"></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -89,6 +99,11 @@
                 </div>
             </div>
             <div class="tui-panel" data-label="system">
+                    <div id="storage-info" class="fm-storage-info">memuat info penyimpanan...</div>
+                    <div class="fm-storage-bar">
+                        <div id="storage-bar-fill" class="fm-storage-bar-fill"></div>
+                    </div>
+                    <!-- <div class="fm-separator"></div>                 -->
                     <div class="fm-ascii-scroll">
                     <pre id="fm-ascii">Loading ASCII</pre>
                     </div>

@@ -1,0 +1,43 @@
+/* =========================================
+   MODUL KHUSUS MOBILE / ANDROID
+   ========================================= */
+
+/* Merampingkan Panel Utama */
+.tui-panel {
+    margin: 1rem auto;
+    padding: 2rem 1rem;
+    width: 100%;
+    border-width: 1px;
+}
+
+.tui-panel::before {
+    font-size: 1rem;
+}
+
+/* Memastikan ASCII Art tidak melebar menembus batas layar */
+#ascii-container {
+    font-size: 0.55rem;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Grid Menu diubah menjadi 1 kolom vertikal */
+.feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+/* Merampingkan ukuran tombol menu dan ikonnya */
+.feature-btn {
+    padding: 1.5rem;
+    gap: 1rem;
+}
+
+.feature-btn .icon {
+    width: 64px;
+    height: 64px;
+}
+
+.feature-label {
+    font-size: 1.2rem;
+}

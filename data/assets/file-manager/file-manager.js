@@ -337,6 +337,25 @@ document.getElementById("btn-rename").addEventListener("click", async () => {
     }
 });
 
+async function loadStorageInfo() {
+    const storageEl = document.getElementById("storage-info");
+    const barFillEl = document.getElementById("storage-bar-fill");
+
+    try {
+        const res = await fetch("/api/storage", { cache: "no-store" });
+        if (!res.ok) throw new Error("gagal fetch");
+
+        const { total, free } = await res.json();
+        const used = total - free;
+        const usedPercent = (used / total) * 100;
+
+        storageEl.textContent = `${free.toLocaleString()} bytes free / ${total.toLocaleString()} bytes total`;
+        barFillEl.style.width = `${usedPercent}%`;
+    } catch (err) {
+        storageEl.textContent = "info penyimpanan tidak tersedia";
+    }
+}
+
 // Memuat ASCII Art untuk panel System di kiri bawah
 fetch('/assets/file-manager/maria-system.txt')
     .then(response => {
@@ -350,4 +369,5 @@ fetch('/assets/file-manager/maria-system.txt')
         document.getElementById('fm-ascii').innerText = "Error: " + error.message;
     });
 
+loadStorageInfo();
 loadFiles();

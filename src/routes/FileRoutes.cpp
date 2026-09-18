@@ -5,7 +5,6 @@
  */
 
 #include "FileRoutes.h"
-#include "ResponseHelper.h"
 
 namespace {
     bool isPathSafe(const String& path) {
@@ -50,7 +49,7 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
     
     });
 
-    // Server API to RENAME/MOVE File or Directory
+    // Server API to RENAME File or Directory
     server.on("/api/files/rename", HTTP_PATCH, [&fileManager](AsyncWebServerRequest *request) {
         if (!request->hasParam("path") || !request->hasParam("newPath")) {
             request->send(400, APP_JSON, buildStatusJson(false, "parameter path and newPath required"));
@@ -138,10 +137,16 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                     return;
                 }
 
-                size_t freeSpace = LittleFS.totalBytes() - LittleFS.usedBytes();
-                size_t margin = LittleFS.totalBytes() * 0.15;
+                // ... kode sebelumnya ...
+
+                // Gunakan nama variabel yang spesifik, misalnya fsTotal dan fsUsed
+                size_t fsTotal, fsUsed;
+                fileManager.getStorageBytes(fsTotal, fsUsed);
+                size_t freeSpace = fsTotal - fsUsed;
+                size_t margin = fsTotal * 0.15;
                 size_t usableSpace = (freeSpace > margin) ? (freeSpace - margin) : 0;
 
+                // Sekarang variabel 'total' merujuk dengan benar ke ukuran file yang sedang diunggah
                 if (total > usableSpace) {
                     request->send(413, APP_JSON, buildStatusJson(false, "Insufficient space storage"));
                     return;
@@ -188,6 +193,21 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                 request->send(200, APP_JSON, buildStatusJson(true, "Upload success: " + writtenPath));
             }
         });
+
+    // Server API to GET Storage Info
+    server.on("/api/storage", HTTP_GET, [&fileManager](AsyncWebServerRequest *request) {
+        JsonDocument doc;
+        JsonObject obj = doc.to<JsonObject>();
+
+        if (!fileManager.getStorageInfo(obj)) {
+            request->send(500, APP_JSON, buildStatusJson(false, "Failed to read storage info"));
+            return;
+        }
+
+        String output;
+        serializeJson(doc, output);
+        request->send(200, APP_JSON, output);
+    });
 
     // Server API to DELETE File/Directory
     server.on("/api/files", HTTP_DELETE, [&fileManager](AsyncWebServerRequest *request) {

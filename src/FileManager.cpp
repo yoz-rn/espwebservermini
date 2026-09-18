@@ -138,3 +138,20 @@ bool FileManager::renamePath(const String& oldPath, const String& newPath) {
 bool FileManager::makeDirectory(PATH) {
     return LittleFS.mkdir(path);
 }
+
+bool FileManager::getStorageBytes(size_t& total, size_t& used) {
+    total = LittleFS.totalBytes();
+    used  = LittleFS.usedBytes();
+    return total != 0; // false kalau LittleFS belum ter-mount
+}
+
+bool FileManager::getStorageInfo(JsonObject& out) {
+    size_t total, used;
+    if (!getStorageBytes(total, used)) return false;
+
+    out["total"] = total;
+    out["used"]  = used;
+    out["free"]  = total - used;
+
+    return true;
+}

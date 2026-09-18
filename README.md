@@ -30,11 +30,11 @@ How to interact with your ESP using webpage
 ![ROADMAP_PROJECT](roadmap-link.svg)
 
 - [x] Wi-Fi Landing Page Dashboard
-- [ ] LittleFS File Manager
-- [ ] TUI-Style webpage
+- [x] LittleFS File Manager
+- [x] TUI-Style webpage
+- [ ] Bikin game (tetris + snek (+ musik 8 bit))
 - [ ] Use WebAssembly if possible
 - [ ] Fix Task Manager
-- [ ] Bikin game (tetris + snek (+ musik 8 bit))
 
 # GETTING STARTED
 
@@ -85,3 +85,12 @@ How to interact with your ESP using webpage
     ```
 
 3. You should see the main webpage with its pretty ASCII Art (courtesy to Letterpress from Flatpak, which is unfortunately is End of Life package)
+
+## Navigating the webpage
+
+1. After accessing the dashboard, scroll down slightly to see the feature, which is
+    * Wi-Fi Landing Page
+    * File Manager
+    * Task Monitor
+    * Games (yes, with an "S")
+2. You can read the description of each feature in their respective webpage

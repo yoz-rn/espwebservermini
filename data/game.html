@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Game(s)</title>
+    <!-- Memuat file CSS utama untuk mempertahankan tema TUI -->
+    <link rel="stylesheet" href="assets/core/theme.css">
+    <link rel="stylesheet" href="assets/core/tui-base.css">
+    <link rel="stylesheet" href="assets/dashboard/dashboard.css">
+    <link rel="stylesheet" href="assets/core/sidebar.css">
+
+    <style>
+        /* Menengahkan deskripsi dan ASCII art pada panel header */
+        .tui-panel[data-label="game center"] {
+            text-align: center;
+        }
+
+        #ascii-container {
+            text-align: center;
+            margin: 1rem auto 0 auto;
+            display: block;
+            white-space: pre; /* Mempertahankan struktur spasi ASCII */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tombol Toggle Sidebar (Mobile) -->
+    <button id="sidebar-toggle">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+        <a href="/index.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/dashboard.svg')"></span>
+            <span class="label">Dashboard</span>
+        </a>
+
+        <a href="/wifi-setup.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/wifi.svg')"></span>
+            <span class="label">WiFi Setup</span>
+        </a>
+
+        <a href="/file-manager.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/file-manager.svg')"></span>
+            <span class="label">File Manager</span>
+        </a>
+
+        <span class="sidebar-item disabled">
+            <span class="icon" style="--icon-url: url('/assets/icons/task-manager.svg')"></span>
+            <span class="label">Task Manager</span>
+        </span>
+
+        <!-- Tautan diperbaiki tanpa karakter '=' -->
+        <a href="/game.html" class="sidebar-item">
+            <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
+            <span class="label">Game</span>
+        </a>
+    </nav>
+    
+    <!-- Wrapper Konten Utama agar tata letak sejajar dengan sidebar -->
+    <main class="main-content">
+        <!-- Panel Header Game Center -->
+        <div class="tui-panel" data-label="game center">
+            <p>Pilih mode permainan WASM atau lihat papan peringkat.</p>
+            <!-- ASCII Art Statis untuk Game Center -->
+            <pre id="ascii-container">Memuat ASCII Art...</pre>
+        </div>
+
+        <!-- Panel Menu Daftar Game & Skor -->
+        <div class="tui-panel" data-label="daftar menu">
+            <div class="feature-grid">
+                
+                <a href="snek.html" class="feature-btn">
+                    <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
+                    <span class="feature-label">snek</span>
+                </a>
+
+                <a href="tetris.html" class="feature-btn">
+                    <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
+                    <span class="feature-label">tetris</span>
+                </a>
+
+                <a href="pong.html" class="feature-btn">
+                    <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
+                    <span class="feature-label">pong</span>
+                </a>
+
+                <a href="highscore.html" class="feature-btn">
+                    <span class="icon" style="--icon-url: url('/assets/icons/task-manager.svg')"></span>
+                    <span class="feature-label">high score</span>
+                </a>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Memanggil Script Sidebar & Fetcher ASCII -->
+    <script src="assets/core/sidebar.js"></script>
+    <script>
+        fetch('/assets/game/game-ascii.txt')
+            .then(response => {
+                if (!response.ok) throw new Error("Gagal mengambil file");
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('ascii-container').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('ascii-container').innerText = "Error: " + error;
+            });
+    </script>
+
+</body>
+</html>

@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="assets/core/theme.css">
     <link rel="stylesheet" href="assets/core/tui-base.css">
     <link rel="stylesheet" href="assets/dashboard/dashboard.css">
+    <link rel="stylesheet" href="assets/dashboard/dashboard-mobile.css" media="(max-width: 768px)">
 </head>
 <body>
 
+    <!-- Konten langsung diletakkan di body tanpa wrapper <main> -->
     <div class="tui-panel" data-label="dashboard miniserver">
         <p>Hello World! File HTML ini disajikan melalui LittleFS.</p>
         <pre id="ascii-container">Memuat ASCII Art...</pre>
@@ -33,14 +35,14 @@
                 <span class="badge">coming soon</span>
             </span>
 
-            <span class="feature-btn disabled">
+            <a href="game.html" class="feature-btn">
                 <span class="icon" style="--icon-url: url('/assets/icons/game.svg')"></span>
                 <span class="feature-label">game</span>
-                <span class="badge">coming soon</span>
-            </span>
+            </a>
         </div>
     </div>
 
+    <!-- Tidak perlu memanggil sidebar.js -->
     <script>
         fetch('/assets/esp32.txt')
             .then(response => {

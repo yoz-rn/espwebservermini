@@ -4,10 +4,10 @@
 .file-manager-grid {
     display: grid;
     /* Kolom kiri & kanan lebarnya fix/proporsional */
-    grid-template-columns: 400px minmax(0, 1fr);
+    grid-template-columns: 580px minmax(0, 1fr);
     /* Baris 1 untuk kontrol/files/preview, Baris 2 untuk system (ASCII) di bawah status */
-    grid-template-rows: auto 1fr;
-    min-height: 100vh;
+    grid-template-rows: auto auto 1fr;
+    height: 100vh;
     gap: 1.5rem;
     width: 100%;
 }
@@ -20,10 +20,20 @@
     flex-direction: column;
 }
 
+/* Panel Path: full-width, row paling atas */
+.file-manager-grid .fm-path-panel {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+}
+
 /* Kolom Kiri (Baris 1): Berisi Path, Files, dan Status */
 .fm-left-col {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -32,17 +42,46 @@
 /* Kolom Kanan (Baris 1 & 2): Preview mendominasi tinggi ke bawah */
 .fm-right-col {
     grid-column: 2;
-    grid-row: 1 / span 2; /* Membuat panel preview memanjang dari atas ke bawah */
+    grid-row: 2 / span 2; /* Membuat panel preview memanjang dari atas ke bawah */
     display: flex;
 }
 
 /* Panel System / ASCII (Baris 2, di bawah Kolom Kiri) */
 .tui-panel[data-label="system"] {
+    grid-column: 1;
+    grid-row: 3;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     padding: 1rem;
     /* overflow: hidden; Mencegah ASCII meluber keluar panel */
+}
+
+.fm-storage-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    width: 100%;
+}
+
+.fm-storage-bar {
+    width: 100%;
+    height: 8px;
+    border: 1px solid var(--border);
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.fm-storage-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.fm-separator {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    margin: 0.75rem 0;
 }
 
 #fm-ascii {
@@ -52,8 +91,7 @@
     color: var(--text-muted);
 }
 
-/* Panel Path & Status */
-.tui-panel[data-label="path"],
+/* Panel Status */
 .tui-panel[data-label="status"] {
     flex-direction: row;
     justify-content: space-between;
@@ -68,6 +106,44 @@
 .fm-actions {
     display: flex;
     gap: 0.5rem;
+}
+
+/* =========================================
+   ACTION BUTTONS (IKON SVG)
+   ========================================= */
+.action-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: var(--border);
+    color: var(--bg-main);
+}
+
+/* Memanfaatkan masking CSS agar SVG bisa diwarnai dari variabel */
+.action-btn .icon {
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask-image: var(--icon-url);
+    mask-image: var(--icon-url);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+
+/* Label yang bertindak sebagai tombol (untuk input file) */
+label.action-btn {
+    display: flex;
 }
 
 /* Panel tabel file */
@@ -148,6 +224,13 @@
     border-radius: 4px;
 }
 
+#preview-content:has(img) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
 /* =========================================
    STATUS BUSY
    ========================================= */
@@ -165,8 +248,13 @@ body.busy #file-table {
     .file-manager-grid {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
+        height: auto;
     }
     .fm-right-col {
+        grid-column: 1;
+        grid-row: auto;
+    }
+    .tui-panel[data-label="system"] {
         grid-column: 1;
         grid-row: auto;
     }

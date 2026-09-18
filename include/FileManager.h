@@ -32,6 +32,9 @@ class FileManager {
         bool renamePath(const String& oldPath, const String& newPath);
         bool makeDirectory(PATH);
 
+        bool getStorageBytes(size_t& total, size_t& used);
+        bool getStorageInfo(JsonObject& out);
+
     private:
         File _writeFile;
         String _writePath;

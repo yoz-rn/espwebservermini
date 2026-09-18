@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>snek.wasm — test run</title>
+<style>
+    body { background: #111; color: #ddd; font-family: monospace; text-align: center; }
+    canvas { border: 2px solid #4CAF50; margin-top: 1rem; image-rendering: pixelated; }
+    #score { font-size: 1.5rem; margin-top: 1rem; }
+    #gameover { color: #E53935; font-size: 1.2rem; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+    <h1>snek.wasm test run</h1>
+    <p>Kontrol: panah atas/bawah/kiri/kanan</p>
+    <div id="score">Score: 0</div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="gameover"></div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const gameoverEl = document.getElementById("gameover");
+
+function unpackColor(argb) {
+    const a = (argb >>> 24) & 0xFF;
+    const r = (argb >>> 16) & 0xFF;
+    const g = (argb >>> 8) & 0xFF;
+    const b = argb & 0xFF;
+    return `rgba(${r},${g},${b},${a / 255})`;
+}
+
+let wasm;
+
+const importObject = {
+    env: {
+        platform_fill_rect: (x, y, w, h, color) => {
+            ctx.fillStyle = unpackColor(color >>> 0);
+            ctx.fillRect(x, y, w, h);
+        },
+    },
+};
+
+const KEY_MAP = {
+    ArrowUp: 0, ArrowDown: 1, ArrowLeft: 2, ArrowRight: 3,
+};
+
+document.addEventListener("keydown", (e) => {
+    if (!wasm) return;
+    const key = KEY_MAP[e.key];
+    if (key !== undefined) {
+        e.preventDefault();
+        wasm.game_keydown(key);
+    }
+});
+
+let lastTime = 0;
+
+function loop(timestamp) {
+    if (!lastTime) lastTime = timestamp;
+    const dt = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+
+    if (!wasm.game_is_over()) {
+        wasm.game_update(dt);
+        wasm.game_render();
+        scoreEl.textContent = `Score: ${wasm.game_get_score()}`;
+        requestAnimationFrame(loop);
+    } else {
+        gameoverEl.textContent = "GAME OVER — refresh untuk main lagi";
+    }
+}
+
+fetch("snek/snek.wasm")
+    .then(res => res.arrayBuffer())
+    .then(bytes => WebAssembly.instantiate(bytes, importObject))
+    .then(({ instance }) => {
+        wasm = instance.exports;
+        wasm.game_seed(Date.now());
+        wasm.game_init();
+        requestAnimationFrame(loop);
+    })
+    .catch(err => {
+        gameoverEl.textContent = "Gagal load WASM: " + err.message;
+        console.error(err);
+    });
+</script>
+</body>
+</html>

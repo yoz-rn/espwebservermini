@@ -7,16 +7,19 @@
 #include "secrets.h"
 #include "NetworkManager.h"
 #include "TaskManager.h"
+#include "GameManager.h"
 
 // This is the API/routes
 #include "routes/TaskRoutes.h"
 #include "routes/WifiRoutes.h"
 #include "routes/FileRoutes.h"
+#include "routes/GameRoutes.h"
 
 // 
 NetworkManager myNetwork(ssid, password);
 TaskManager myTask;
 FileManager myFile;
+GameManager myGame;
 
 AsyncWebServer server(80);
 
@@ -56,15 +59,20 @@ void setup() {
   }
   ); 
     
+  myGame.begin();
 
+  registerGameRoutes(server, myGame);
   registerTaskRoutes(server, myTask);
   registerWifiRoutes(server, myNetwork);
   registerFileRoutes(server, myFile);
+  
   server.serveStatic("/", LittleFS, "/");
 
 
 
   server.begin();
+
+
   Serial.println("[Server] HTTP Server berjalan di latar belakang.");
 
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <ESPAsyncWebServer.h>
 
 #define APP_JSON "application/json"
 
