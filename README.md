@@ -25,16 +25,27 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 * PlatformIO
 * WebAssembly
 
-# ROADMAP
+# ROADMAP & MILESTONES
 
 ![ROADMAP_PROJECT](roadmap-link.svg)
 
-- [x] Wi-Fi Landing Page Dashboard
-- [x] LittleFS File Manager
-- [x] TUI-Style webpage
-- [ ] Bikin game (tetris + snek (+ musik 8 bit))
-- [ ] Use WebAssembly if possible
-- [ ] Fix Task Manager
+This project is being developed in phases. Here is a roadmap of features ranging from those that have been completed to those still in the planning stages:
+
+### Phase 1: Network Foundation & Core Systems
+Focus on the device’s basic capabilities to connect to and be accessed via a network.
+- [x] **Self-Service Wi-Fi Configuration:** A dedicated *dashboard* page for easily connecting devices to a Wi-Fi network
+
+### Phase 2: Storage Management & Visual Interface
+Focus on the user interface and the ability to manage files in the device’s memory.
+- [x] **TUI-Style Interface (Terminal UI):** A lightweight, responsive, retro *web* interface with a terminal-style look and customizable colors
+- [x] **Internal File Manager:** A visual interface for viewing, uploading, creating folders, and deleting files directly from the *browser*.
+- [x] **Storage Capacity Information:** A visual indicator on the *dashboard* to monitor the remaining available storage space
+
+### Phase 3: Interactive Experiments & Entertainment
+Focus on advanced technology experiments to present interactive applications.
+- [x] **Mini-Game Integration:** Embed classic games like Tetris and Snake that can be played directly in the *browser*
+- [x] **8-bit Audio System:** Add a retro background music player (*soundtrack*) to complement the game
+- [x] **High-Performance Optimization (WebAssembly):** Implementing WebAssembly technology so that games and animations run extremely smoothly on users’ devices
 
 # GETTING STARTED
 
@@ -75,7 +86,7 @@ Install these various ~sh*t~
 
     To upload the webpage, Use the `Upload Filesystem Image` button. This will upload all file and folders in the `data` folder to the esp LittleFS partition.
 
-    > [!WARNING]
+    > [!CAUTION]
     > Due to limitations of ESP32 Flash Memory, make sure the `/data` directory is always under ~1,375 MB (1441792 bytes), at least in my board anyway.
     > I havent't developed the SD Card variant because of, well budget
 
@@ -96,15 +107,15 @@ Install these various ~sh*t~
     * Wi-Fi Landing Page
     * File Manager
     * Task Monitor
-    * Games (yes, with an "S")
+    * Games
 2. You can read the description of each feature in their respective webpage
 
 # CREDITS
 
-This project won't come this far without the divine blessing of the internet (and of course AI)
+This project won't come this far without the divine blessing of the internet (and a hard pill to swallow, AI)
 
 * UI/UX
-    * [system24](https://betterdiscord.app/themes/system24) theme for better discord
+    * [system24](https://betterdiscord.app/themes/system24) theme for BetterDiscord
     * [spicetify-tui](https://github.com/AvinashReddy3108/spicetify-tui.git) theme for spicetify
 
 * Library

@@ -48,21 +48,52 @@
     display: flex;
 }
 
+/* Ganti class yang lama dengan ini */
 .game-canvas-container {
-    flex-grow: 1;
+    flex: 0 0 auto;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg-main);
     border: 1px solid var(--border);
-    height: 100%;
 }
 
 #game-canvas {
-    max-width: 100%;
-    max-height: 100%;
+    /* Tinggi dibuat 100% agar otomatis membesar memenuhi panel, 
+       lebar (auto) akan mengikuti rasio asli dari atribut canvas (200x400) */
+    height: 100%;
+    width: auto; 
+    max-height: 800px;
     object-fit: contain;
     image-rendering: pixelated;
+}
+
+/* Tambahkan class baru di bawahnya */
+.play-area-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.ascii-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: var(--text-muted); /* Gunakan variabel warna TUI Anda */
+}
+
+.ascii-side pre {
+    margin: 0;
+    white-space: pre;
+    font-size: 0.45rem; /* Sesuaikan agar pas di layar */
+    line-height: 1.1;
+    font-family: monospace;
 }
 
 .game-right-col {

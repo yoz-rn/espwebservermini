@@ -28,8 +28,20 @@
             
             <div class="game-left-col">
                 <div class="tui-panel" data-label="play area" style="height: 100%;">
-                    <div class="game-canvas-container">
-                        <canvas id="game-canvas" width="200" height="400"></canvas>
+                    <div class="play-area-wrapper">
+                        
+                        <div class="ascii-side left-art">
+                            <pre id="ascii-left"></pre>
+                        </div>
+                        
+                        <div class="game-canvas-container">
+                            <canvas id="game-canvas" width="200" height="400"></canvas>
+                        </div>
+
+                        <div class="ascii-side right-art">
+                            <pre id="ascii-right"></pre>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -112,6 +124,28 @@
                 wasmInstance.game_keydown(key);
             }
         });
+
+        async function loadAsciiArt() {
+            try {
+                const [leftRes, rightRes] = await Promise.all([
+                    fetch('/assets/game/gm-left.txt'),
+                    fetch('/assets/game/gm-right.txt')
+                ]);
+                
+                if (leftRes.ok) {
+                    document.getElementById('ascii-left').textContent = await leftRes.text();
+                }
+                if (rightRes.ok) {
+                    document.getElementById('ascii-right').textContent = await rightRes.text();
+                }
+            } catch (err) {
+                console.error("Gagal memuat ASCII art:", err);
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        loadAsciiArt();
+
     </script>
 </body>
 </html>
