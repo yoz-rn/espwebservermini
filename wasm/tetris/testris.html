@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>tetris.wasm — test run</title>
+<style>
+    body { background: #111; color: #ddd; font-family: monospace; text-align: center; }
+    canvas { border: 2px solid #4CAF50; margin-top: 1rem; image-rendering: pixelated; }
+    #score { font-size: 1.5rem; margin-top: 1rem; }
+    #gameover { color: #E53935; font-size: 1.2rem; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+    <h1>tetris.wasm test run</h1>
+    <p>← → geser | ↑ rotate | ↓ soft drop | Space hard drop | Enter restart</p>
+    <div id="score">Score: 0</div>
+    <canvas id="canvas" width="200" height="400"></canvas>
+    <div id="gameover"></div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const gameoverEl = document.getElementById("gameover");
+
+function unpackColor(argb) {
+    const a = (argb >>> 24) & 0xFF;
+    const r = (argb >>> 16) & 0xFF;
+    const g = (argb >>> 8) & 0xFF;
+    const b = argb & 0xFF;
+    return `rgba(${r},${g},${b},${a / 255})`;
+}
+
+let wasm;
+
+const importObject = {
+    env: {
+        platform_fill_rect: (x, y, w, h, color) => {
+            ctx.fillStyle = unpackColor(color >>> 0);
+            ctx.fillRect(x, y, w, h);
+        },
+    },
+};
+
+// 0=left, 1=right, 2=rotate, 3=soft_drop, 4=hard_drop, 5=restart
+const KEY_MAP = {
+    ArrowLeft: 0, ArrowRight: 1, ArrowUp: 2, ArrowDown: 3,
+    " ": 4, Enter: 5,
+};
+
+document.addEventListener("keydown", (e) => {
+    if (!wasm) return;
+    const key = KEY_MAP[e.key];
+    if (key !== undefined) {
+        e.preventDefault();
+        wasm.game_keydown(key);
+    }
+});
+
+let lastTime = 0;
+
+function loop(timestamp) {
+    if (!lastTime) lastTime = timestamp;
+    const dt = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+
+    wasm.game_update(dt);
+    wasm.game_render();
+    scoreEl.textContent = `Score: ${wasm.game_get_score()}`;
+    gameoverEl.textContent = wasm.game_is_over() ? "GAME OVER — tekan Enter untuk restart" : "";
+
+    requestAnimationFrame(loop);
+}
+
+fetch("tetris.wasm")
+    .then(res => {
+        if (!res.ok) throw new Error(`fetch tetris.wasm gagal: HTTP ${res.status} (cek struktur folder)`);
+        return res.arrayBuffer();
+    })
+    .then(bytes => WebAssembly.instantiate(bytes, importObject))
+    .then(({ instance }) => {
+        wasm = instance.exports;
+        wasm.game_seed(Date.now());
+        wasm.game_init();
+        requestAnimationFrame(loop);
+    })
+    .catch(err => {
+        gameoverEl.textContent = "Gagal load WASM: " + err.message;
+        console.error(err);
+    });
+</script>
+</body>
+</html>

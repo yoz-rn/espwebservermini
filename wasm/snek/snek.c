@@ -1,28 +1,17 @@
 #include "../common/game_common.h"
 
-/*
- * Grid 20×20 cell 20px → canvas 400×400px, ukuran wajar buat mobile juga. 
- * Warna format 0xAARRGGBB — nanti di JS tinggal geser bit buat pecah jadi alpha/red/green/blue
- * format ini berlaku sama persis buat tetris.c nanti biar cuma satu fungsi unpack di JS yang dipakai berdua.
- */
-
 #define COLS 20
 #define ROWS 20
 #define CELL_SIZE 20
 #define STEP_INTERVAL 0.12f
 
-#define BG_COLOR   0xFF181818
+#define BG_COLOR    0xFF181818
 #define SNAKE_COLOR 0xFF4CAF50
 #define FOOD_COLOR  0xFFE53935
 
 typedef struct { i32 x, y; } Cell;
 
 typedef enum { DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } Dir;
-
-/*
- * SNAKE_CAP sengaja COLS*ROWS — itu batas maksimal ular bisa memanjang sebelum memenuhi seluruh grid
- * jadi array-nya gak akan pernah overflow apa pun yang terjadi di gameplay.
- */
 
 #define SNAKE_CAP (COLS * ROWS)
 
@@ -46,12 +35,6 @@ static void snake_pop_front(Snake* s) {
     s->size--;
 }
 
-/*
- * Freestanding C gak punya rand()/time() bawaan, jadi bikin sendiri (LCG sederhana)
- * seed-nya harus disuntik dari JS (misal dari Date.now()) lewat fungsi export terpisah
- * karena WASM sendiri gak punya sumber keacakan
- */
-
 static u32 rng_state = 1;
 
 static u32 rand_u32(void) {
@@ -62,10 +45,6 @@ static u32 rand_u32(void) {
 void game_seed(u32 seed) {
     rng_state = seed;
 }
-
-/*
- * state game dan init
- */
 
 typedef struct {
     Snake snake;
@@ -110,17 +89,18 @@ void game_init(void) {
     place_food();
 }
 
-/*
- * next_dir cuma di-buffer, bukan langsung dipakai — dan ditolak kalau berlawanan arah persis
- */
-
 static i32 is_opposite(Dir a, Dir b) {
     return (a == DIR_UP && b == DIR_DOWN) || (a == DIR_DOWN && b == DIR_UP) ||
            (a == DIR_LEFT && b == DIR_RIGHT) || (a == DIR_RIGHT && b == DIR_LEFT);
 }
 
-// key: 0=up, 1=down, 2=left, 3=right — JS yang mapping tombol fisik ke angka ini
+// key: 0=up, 1=down, 2=left, 3=right, 4=restart — JS yang mapping tombol fisik ke angka ini
 void game_keydown(i32 key) {
+    if (key == 4) {
+        if (game.game_over) game_init();
+        return;
+    }
+
     if (key < 0 || key > 3) return;
     Dir requested = (Dir)key;
 
@@ -128,10 +108,6 @@ void game_keydown(i32 key) {
         game.next_dir = requested;
     }
 }
-
-/*
- * update, dipanggil tiap frame dengan dt, gerak diskret dikontrol step_cooldown
- */
 
 static const i32 DIR_DX[4] = { 0, 0, -1, 1 };
 static const i32 DIR_DY[4] = { -1, 1, 0, 0 };
@@ -167,10 +143,6 @@ void game_update(f32 dt) {
         snake_pop_front(&game.snake);
     }
 }
-
-/*
- * render & getter buat highscore (dipanggil JS pas game over)
- */
 
 void game_render(void) {
     platform_fill_rect(0, 0, COLS * CELL_SIZE, ROWS * CELL_SIZE, BG_COLOR);

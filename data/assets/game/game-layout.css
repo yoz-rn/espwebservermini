@@ -1,0 +1,147 @@
+/* =========================================
+   LAYOUT ARENA BERMAIN (KIRI DOMINAN)
+   ========================================= */
+.game-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+    width: 100%;
+    height: calc(100vh - 3rem);
+}
+
+.game-grid .tui-panel {
+    margin-top: 0; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-header-panel {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+}
+
+.ascii-banner {
+    margin: 0;
+    font-size: 0.65rem;
+    line-height: 1.1;
+    color: var(--accent);
+    font-weight: bold;
+    white-space: pre; 
+}
+
+#connection-status {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    padding-left: 1rem;
+}
+
+.game-left-col {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+}
+
+.game-canvas-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-main);
+    border: 1px solid var(--border);
+    height: 100%;
+}
+
+#game-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.game-right-col {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.game-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 1.2rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.game-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.action-btn-large {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 0.75rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.action-btn-large:hover {
+    background: var(--border);
+    color: var(--bg-main);
+}
+
+.next-piece-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+}
+
+@media (max-width: 900px) {
+    .game-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
+    }
+    
+    .game-left-col, .game-right-col {
+        grid-column: 1;
+        grid-row: auto;
+    }
+    
+    .game-right-col {
+        flex-direction: column-reverse;
+    }
+    
+    .game-header-panel {
+        flex-direction: column !important;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .ascii-banner {
+        font-size: 0.5rem;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}

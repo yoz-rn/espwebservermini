@@ -9,7 +9,7 @@ git_sync.sh
 assets/*
 logs/*.log
 data/assets/gz/*
+backup
 
 !assets/esp32.txt
 !assets/README.md
-!data/assets/icon

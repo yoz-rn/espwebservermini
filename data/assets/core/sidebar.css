@@ -1,5 +1,5 @@
 #sidebar-toggle {
-    display: none; /* default: disembunyikan di desktop */
+    display: none;
     position: fixed;
     top: 0.5rem;
     left: 0.5rem;
@@ -26,22 +26,94 @@
     z-index: 100;
 }
 
-#sidebar a, #sidebar .disabled {
+#sidebar .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     color: var(--text-main);
     text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+    border-left: 3px solid transparent;
 }
 
-#sidebar .disabled {
-    color: var(--text-muted);
-    opacity: 0.5;
+#sidebar .sidebar-item:hover:not(.disabled) {
+    background: var(--border);
+    color: var(--bg-main);
 }
 
-#sidebar a.active {
+#sidebar .sidebar-item.active {
     color: var(--accent);
     font-weight: bold;
+    background: rgba(110, 155, 164, 0.1);
+    border-left: 3px solid var(--accent);
 }
 
-/* mobile: sidebar jadi off-canvas, toggle button muncul */
+#sidebar .sidebar-item .icon {
+    width: 24px;
+    height: 24px;
+    background-color: currentColor;
+    -webkit-mask-image: var(--icon-url);
+    mask-image: var(--icon-url);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    flex-shrink: 0;
+}
+
+#sidebar .sidebar-item.disabled {
+    color: var(--text-muted);
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.sidebar-dropdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-btn {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.dropdown-content {
+    display: none;
+    flex-direction: column;
+    padding-left: 2rem;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.sidebar-dropdown.open .dropdown-content {
+    display: flex;
+}
+
+.submenu-item {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.submenu-item:hover, .submenu-item.active {
+    color: var(--accent);
+    background: transparent;
+    border-left: 2px solid var(--accent);
+}
+
+.main-content {
+    margin-left: 180px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    min-height: 100vh;
+}
+
 @media (max-width: 768px) {
     #sidebar-toggle {
         display: block;
@@ -56,71 +128,9 @@
     #sidebar.open {
         transform: translateX(0);
     }
-}
-/* ... (Bagian #sidebar-toggle dan #sidebar container biarkan sama seperti sebelumnya) ... */
 
-/* =========================================
-   GAYA ITEM SIDEBAR (BARU)
-   ========================================= */
-.sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--text-main);
-    text-decoration: none;
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    transition: all 0.2s ease-in-out;
-    border-left: 3px solid transparent; /* Persiapan untuk highlight .active */
-}
-
-/* Efek Hover (Kecuali yang disabled) */
-.sidebar-item:hover:not(.disabled) {
-    background: var(--border);
-    color: var(--bg-main);
-}
-
-/* Highlight Halaman Aktif */
-.sidebar-item.active {
-    color: var(--accent);
-    font-weight: bold;
-    background: rgba(110, 155, 164, 0.1); /* Background tipis sewarna accent */
-    border-left: 3px solid var(--accent);
-}
-
-/* Pengaturan Ikon Masking */
-.sidebar-item .icon {
-    width: 24px;
-    height: 24px;
-    background-color: currentColor;
-    -webkit-mask-image: var(--icon-url);
-    mask-image: var(--icon-url);
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    flex-shrink: 0;
-}
-
-/* Item Belum Tersedia */
-.sidebar-item.disabled {
-    color: var(--text-muted);
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.main-content {
-    /* Mendorong konten utama ke kanan selebar sidebar desktop (180px) */
-    margin-left: 180px; 
-    padding: 1.5rem;
-    box-sizing: border-box;
-    min-height: 100vh;
-}
-
-/* Mode Mobile / Android */
-@media (max-width: 768px) {
     .main-content {
-        /* Mengembalikan margin ke 0 karena sidebar disembunyikan */
-        margin-left: 0; 
-        padding-top: 4rem; /* Ruang aman untuk tombol toggle ☰ */
+        margin-left: 0;
+        padding-top: 4rem;
     }
 }

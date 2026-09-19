@@ -1,0 +1,15 @@
+/* STUB — bukan theme.css asli, cuma placeholder biar layout kebaca pas tes */
+:root {
+    --bg-main: #181818;
+    --text-main: #ddd;
+    --text-muted: #888;
+    --border: #4CAF50;
+    --accent: #4CAF50;
+}
+body { background: var(--bg-main); color: var(--text-main); font-family: monospace; margin: 0; padding: 1rem; }
+.tui-panel { border: 1px solid var(--border); padding: 1rem; position: relative; margin-top: 1rem; }
+.tui-panel[data-label]::before {
+    content: attr(data-label);
+    position: absolute; top: -0.75em; left: 0.5em;
+    background: var(--bg-main); padding: 0 0.5em; color: var(--text-muted); font-size: 0.8em;
+}

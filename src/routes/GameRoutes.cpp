@@ -17,7 +17,7 @@ void registerGameRoutes(AsyncWebServer& server, GameManager& gameManager) {
 
         String game = request->getParam("game")->value();
 
-        if (isValidGame(game)) {
+        if (!isValidGame(game)) {
             request->send(400, APP_JSON, buildStatusJson(false, "unknown game"));
             return;
         }
@@ -32,7 +32,7 @@ void registerGameRoutes(AsyncWebServer& server, GameManager& gameManager) {
     });
 
     // Server API to POST Score
-    server.on("api/game/score", HTTP_POST, GAME_SERVER {
+    server.on("/api/game/score", HTTP_POST, GAME_SERVER {
         if (!request->hasParam("game") || !request->hasParam("score")) {
             request->send(400, APP_JSON, buildStatusJson(false, "parameter game and score required"));
             return;
@@ -61,5 +61,32 @@ void registerGameRoutes(AsyncWebServer& server, GameManager& gameManager) {
         String output;
         serializeJson(doc, output);
         request->send(200, APP_JSON, output);   
+    });
+
+    server.on("/api/game/asset", HTTP_GET, GAME_SERVER {
+        if (!request->hasParam("game") || !request->hasParam("file")) {
+            request->send(400, APP_JSON, buildStatusJson(false, "parameter game and score required"));
+            return;
+        }
+
+        String game = request->getParam("game")->value();
+        String file = request->getParam("file")->value();
+
+        if (!isValidGame(game)) {
+            request->send(400, APP_JSON, buildStatusJson(false, "unknown game"));
+            return;        
+        }
+
+        String actualPath = "/assets/game/" + game + "/" + file;
+
+        if (!LittleFS.exists(actualPath)) {
+            request->send(404, APP_JSON, buildStatusJson(false, "asset not found: " + actualPath));
+            return;
+        }
+
+        String mimeType = file.endsWith(".mid") ? "audio/midi" : "text/plain";
+
+        AsyncWebServerResponse* response = request->beginResponse(LittleFS, actualPath, mimeType);
+        request->send(response);
     });
 }
