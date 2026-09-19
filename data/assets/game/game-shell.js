@@ -50,7 +50,7 @@ class GameAPI {
             const response = await fetch(`/api/game/score?game=${this.gameName}`, { cache: "no-store" });
             if (!response.ok) return 0;
             const data = await response.json();
-            return data.success ? data.highScore : 0;
+            return data.success ? data.highscore : 0;
         } catch (error) {
             console.error(`[${this.gameName}] Gagal mengambil skor:`, error);
             return 0;

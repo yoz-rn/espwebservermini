@@ -26,7 +26,7 @@ void registerGameRoutes(AsyncWebServer& server, GameManager& gameManager) {
         doc["success"] = true;
         doc["highscore"] = gameManager.getHighScore(game);
 
-        String output;
+        String output; 
         serializeJson(doc, output);
         request->send(200, APP_JSON, output);
     });

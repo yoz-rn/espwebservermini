@@ -33,19 +33,33 @@ This project is being developed in phases. Here is a roadmap of features ranging
 
 ### Phase 1: Network Foundation & Core Systems
 Focus on the device’s basic capabilities to connect to and be accessed via a network.
-- [x] **Self-Service Wi-Fi Configuration:** A dedicated *dashboard* page for easily connecting devices to a Wi-Fi network
+- [x] **Self-Service Wi-Fi Configuration:** A dedicated *dashboard* page for connecting the device to a Wi-Fi network without reflashing. Credentials are stored in NVS and survive reboots, with AP and STA modes running side by side
+- [ ] **Connection Status Indicator:** Show on the *dashboard* whether the device is in AP-only or STA-connected mode
+- [ ] **STA Auto-Reconnect:** Periodically retry the saved network in the background
+- [ ] **Forget Wi-Fi:** Clear the saved credentials from the *browser*, no reflash needed
 
 ### Phase 2: Storage Management & Visual Interface
 Focus on the user interface and the ability to manage files in the device’s memory.
-- [x] **TUI-Style Interface (Terminal UI):** A lightweight, responsive, retro *web* interface with a terminal-style look and customizable colors
-- [x] **Internal File Manager:** A visual interface for viewing, uploading, creating folders, and deleting files directly from the *browser*.
+- [x] **TUI-Style Interface (Terminal UI):** A lightweight, responsive, retro *web* interface with a terminal-style look, a shared sidebar, and customizable colors
+- [x] **Internal File Manager:** A visual interface for browsing, previewing, uploading, creating folders, renaming, and deleting files directly from the *browser*, with path traversal protection
 - [x] **Storage Capacity Information:** A visual indicator on the *dashboard* to monitor the remaining available storage space
+- [ ] **File Manager Hardening:** A protected files list for critical paths, plus clearer error messages for failed deletes
+- [ ] **Partition Awareness:** Compare the LittleFS partition against the real flash capacity using `partitions.csv`
 
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on advanced technology experiments to present interactive applications.
-- [x] **Mini-Game Integration:** Embed classic games like Tetris and Snake that can be played directly in the *browser*
-- [x] **8-bit Audio System:** Add a retro background music player (*soundtrack*) to complement the game
-- [x] **High-Performance Optimization (WebAssembly):** Implementing WebAssembly technology so that games and animations run extremely smoothly on users’ devices
+- [x] **Tetris:** Playable in the *browser* and verified on the physical device
+- [x] **Snek:** WASM backend is done, frontend page still needs to be integrated
+- [x] **8-bit Audio System:** A retro background music player (*soundtrack*) to complement the games
+- [x] **Persistent High Scores:** Scores are saved on the device and shown in the game UI
+- [x] **High-Performance Optimization (WebAssembly):** Freestanding C compiled to WASM, so games run smoothly without a heavy runtime
+- [ ] **Tetris Polish:** Next-piece preview, pause and reset buttons
+- [ ] **More Games:** Conway's Game of Life and Minesweeper
+
+### Phase 4: Monitoring & Tooling
+Focus on observing the device and making development easier.
+- [ ] **Task Monitor:** Real-time FreeRTOS task stats streamed to the *browser*
+- [ ] **Local Test Environment:** An emulated 1 MB LittleFS so the frontend can be tested without the physical device
 
 # GETTING STARTED
 
@@ -86,9 +100,9 @@ Install these various ~sh*t~
 
     To upload the webpage, Use the `Upload Filesystem Image` button. This will upload all file and folders in the `data` folder to the esp LittleFS partition.
 
-    > [!CAUTION]
-    > Due to limitations of ESP32 Flash Memory, make sure the `/data` directory is always under ~1,375 MB (1441792 bytes), at least in my board anyway.
-    > I havent't developed the SD Card variant because of, well budget
+> [!CAUTION]
+> Due to limitations of ESP32 Flash Memory, make sure the `/data` directory is always under ~1,375 MiB (1441792 bytes), at least in my board anyway.
+> I havent't developed the SD Card variant because of, well budget
 
 ## Access the dashboard
 

@@ -92,14 +92,13 @@ Sempat dieksplorasi sebagai persiapan milestone berikutnya (frontend berbasis WA
 
 Diurutkan berdasarkan prioritas yang disepakati:
 
-- [ ] **Path traversal validation** — tolak `path` yang mengandung `..` di semua endpoint. Prioritas tertinggi: device exposed ke siapa pun yang connect ke AP WiFi, belum ada validasi format path sama sekali.
-- [ ] **Fix regresi `generateDuplicateName`** — pemisah ekstensi pakai `path.indexOf('.')` (titik pertama), seharusnya `lastIndexOf('.')` (titik terakhir). Salah untuk nama file multi-titik (`common.min.js`, `8bit-image.webp`). Sempat benar di versi sebelumnya, regresi saat file di-upload ulang manual.
+- [x] **Path traversal validation** — tolak `path` yang mengandung `..` di semua endpoint. Prioritas tertinggi: device exposed ke siapa pun yang connect ke AP WiFi, belum ada validasi format path sama sekali.
+- [x] **Fix regresi `generateDuplicateName`** — pemisah ekstensi pakai `path.indexOf('.')` (titik pertama), seharusnya `lastIndexOf('.')` (titik terakhir). Salah untuk nama file multi-titik (`common.min.js`, `8bit-image.webp`). Sempat benar di versi sebelumnya, regresi saat file di-upload ulang manual.
 - [ ] **Rename/Move** — `LittleFS.rename(oldPath, newPath)` sudah tersedia bawaan, tinggal wrap jadi endpoint (`PUT`/`PATCH /api/files/rename`). Saat ini rename cuma bisa lewat download-manual → re-upload → delete lama.
 - [ ] **`mkdir`** — `LittleFS.mkdir(path)` bawaan, belum ada endpoint. LittleFS ESP32 tidak otomatis membuat folder dari penulisan file ke path baru, jadi tanpa ini bikin direktori kosong tidak straightforward (kerasa pas testing Delete).
 - [ ] **Concurrency fix untuk Create** — state upload (`_writeFile`/`_writeReady`) di `FileManager` cuma aman untuk satu upload aktif. Perlu migrasi ke state per-request (`request->_tempObject`) **sebelum** frontend multi-upload beneran dipakai — walau keputusan sesi ini (upload serial, bukan paralel) membuat ini tidak mendesak untuk saat ini.
-- [ ] **Protected files list** (opsional, belum diputuskan) — apakah perlu blocklist path kritikal (`index.html`, `wifi-setup.html`) supaya tidak ke-delete lewat API secara tidak sengaja, atau dibiarkan "full power" karena project personal.
-- [ ] Endpoint pendukung UX (opsional, murah ditambah): `GET /api/storage` (total/used/free, logic sudah ada dari Create, tinggal di-expose).
-- [ ] Investigasi ulang bug WASM `failed to grow table` kalau milestone WASM dilanjut — kandidat tersisa: versi `rustc`/flag `reference-types` di codegen.
+- [ ] **Protected files list** — blocklist path kritikal (`index.html`, `wifi-setup.html`) supaya tidak ke-delete lewat API secara tidak sengaja.
+- [x] Endpoint pendukung UX (opsional, murah ditambah): `GET /api/storage` (total/used/free, logic sudah ada dari Create, tinggal di-expose).
 
 ## Lampiran
 

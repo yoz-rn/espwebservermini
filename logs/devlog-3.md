@@ -84,22 +84,21 @@ Dua perubahan berikut dilakukan user sendiri, tidak lewat pembahasan chat, dicat
 
 ## 9. Backlog Baru (Catatan UI/UX dari User, Sesi Berikutnya)
 
-- [ ] **Panel `path` full-width** — memanjang ke kanan menghabiskan sisa layar; 2 tombol aksi (upload, mkdir) dipindah ke kiri sebelum elemen path, bukan di kanan seperti sekarang.
-- [ ] **Align ASCII art panel `system` ke top-left** — supaya tidak "hilang" (ter-scroll keluar area terlihat) saat user sedang melihat teks panjang di panel preview yang sejajar.
-- [ ] **`GET /api/storage`** — tampilkan sisa kapasitas LittleFS di UI. Backend logic-nya sudah ada (dipakai di validasi Create), tinggal expose sebagai endpoint tersendiri + elemen UI penampil. (Item ini sudah muncul di backlog sesi sebelumnya, belum dikerjakan.)
-- [ ] **Align gambar di panel preview jadi center vertikal**, bukan top-middle seperti sekarang.
+- [x] **Panel `path` full-width** — memanjang ke kanan menghabiskan sisa layar; 2 tombol aksi (upload, mkdir) dipindah ke kiri sebelum elemen path, bukan di kanan seperti sekarang.
+- [x] **Align ASCII art panel `system` ke top-left** — supaya tidak "hilang" (ter-scroll keluar area terlihat) saat user sedang melihat teks panjang di panel preview yang sejajar.
+- [x] **`GET /api/storage`** — tampilkan sisa kapasitas LittleFS di UI. Backend logic-nya sudah ada (dipakai di validasi Create), tinggal expose sebagai endpoint tersendiri + elemen UI penampil. (Item ini sudah muncul di backlog sesi sebelumnya, belum dikerjakan.)
+- [x] **Align gambar di panel preview jadi center vertikal**, bukan top-middle seperti sekarang.
 
 ---
 
 ## 10. Backlog Lama yang Masih Terbuka
 
-- [ ] Preview `.avif` masih belum berhasil ditampilkan meski ekstensi sudah masuk whitelist — root cause belum diinvestigasi.
+- [x] Preview `.avif` masih belum berhasil ditampilkan meski ekstensi sudah masuk whitelist — root cause belum diinvestigasi.
 - [ ] Pesan `409 "Directory not empty"` saat gagal delete folder belum ditampilkan spesifik di UI (masih pesan generik "gagal menghapus") — user memutuskan ditunda sampai proyek berkembang lebih jauh.
-- [ ] Protected files list (opsional) — belum diputuskan apakah perlu blocklist path kritikal.
+- [ ] Protected files list — blocklist path kritikal.
 - [ ] Concurrency fix untuk Create (state upload per-request, bukan member variable tunggal) — belum mendesak karena upload masih single-file.
-- [ ] Investigasi ulang bug WASM `failed to grow table` — belum disentuh lagi sejak sesi sebelumnya.
-- [ ] Restyle responsive design menyeluruh (breakpoint sudah ada parsial di file-manager grid & sidebar, belum diverifikasi di semua halaman/ukuran layar).
-- [ ] Task Manager dan Game (Tetris & Snake) — dua dari empat fitur proyeksi utama proyek, belum dimulai sama sekali.
+- [x] Restyle responsive design menyeluruh (breakpoint sudah ada parsial di file-manager grid & sidebar, belum diverifikasi di semua halaman/ukuran layar).
+- [ ] Task Manager — sisa satu fitur proyeksi utama proyek, belum dimulai sama sekali.
 
 ## Lampiran
 

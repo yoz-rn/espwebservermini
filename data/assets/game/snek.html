@@ -1,11 +1,144 @@
-===========================================
-==      ===  =======  ==        ==  ====  =
-=  ====  ==   ======  ==  ========  ===  ==
-=  ====  ==    =====  ==  ========  ==  ===
-==  =======  ==  ===  ==  ========  =  ====
-====  =====  ===  ==  ==      ====     ====
-======  ===  ====  =  ==  ========  ==  ===
-=  ====  ==  =====    ==  ========  ===  ==
-=  ====  ==  ======   ==  ========  ====  =
-==      ===  =======  ==        ==  ====  =
-===========================================
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snek - ESP32</title>
+
+    <link rel="stylesheet" href="/assets/core/theme.css">
+    <link rel="stylesheet" href="/assets/core/tui-base.css">
+    <link rel="stylesheet" href="/assets/core/sidebar.css">
+    <link rel="stylesheet" href="game-layout.css">
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="game-grid">
+
+            <div class="tui-panel game-header-panel" data-label="game">
+                    <pre class="ascii-banner">
+                    SSSSS  NN   NN EEEEEEE KK  KK
+                    SS      NNN  NN EE      KK KK
+                    SSSSS  NN N NN EEEEE   KKKK
+                        SS NN  NNN EE      KK KK
+                    SSSSS  NN   NN EEEEEEE KK  KK
+                    </pre>
+                <span id="connection-status">Ready</span>
+            </div>
+
+            <div class="game-left-col">
+                <div class="tui-panel" data-label="play area" style="height: 100%;">
+                    <div class="play-area-wrapper">
+                        <div class="ascii-side left-art"><pre id="ascii-left"></pre></div>
+
+                        <div class="game-canvas-container container-square">
+                            <!-- width/height WAJIB sama dengan area gambar di snek.c -->
+                            <canvas id="game-canvas" class="canvas-square" width="400" height="400"></canvas>
+                        </div>
+
+                        <div class="ascii-side right-art"><pre id="ascii-right"></pre></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-right-col">
+                <div class="tui-panel" data-label="status">
+                    <div class="game-stats">
+                        <div class="stat-row"><span>Score</span><span id="score-display">0</span></div>
+                        <div class="stat-row"><span>High Score</span><span id="high-score-display">...</span></div>
+                    </div>
+                    <div class="game-actions">
+                        <button id="btn-start" class="action-btn-large">Start Game</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <script src="/assets/core/sidebar.js"></script>
+    <script src="/assets/core/webaudio-tinysynth.js"></script>
+    <script src="/assets/game/game-shell.js"></script>
+
+    <script>
+
+        const gameName = "snek";
+        const BGM_FILE = "snek.mid";   // ganti sesuai nama file .mid Anda
+        const api = new GameAPI(gameName);
+        const audio = new GameAudio(gameName);
+        let wasmInstance = null;
+
+        const statusEl = document.getElementById('connection-status');
+
+        api.fetchHighScore().then(score => {
+            document.getElementById('high-score-display').innerText = score;
+        });
+
+        function onGameOver(finalScore) {
+            audio.stopBGM();
+            statusEl.textContent = "Game Over";
+
+            api.submitScore(finalScore).then(result => {
+                if (result && result.isNewRecord) {
+                    alert("Rekor Baru! Skor: " + result.highScore);
+                    document.getElementById('high-score-display').innerText = result.highScore;
+                } else {
+                    alert("Game Over! Skor: " + finalScore);
+                }
+            });
+
+            wasmInstance = null;
+            document.getElementById('btn-start').disabled = false;
+        }
+
+        document.getElementById('btn-start').addEventListener('click', async (e) => {
+            if (wasmInstance) return;
+            e.target.disabled = true;
+            statusEl.textContent = "Loading...";
+
+            try {
+                wasmInstance = await loadGame("snek/snek.wasm", "game-canvas");
+                audio.playBGM(BGM_FILE, 1);
+                statusEl.textContent = "Playing";
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "Gagal memuat game";
+                e.target.disabled = false;
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (!wasmInstance) return;
+            const keyMap = { ArrowUp: 0, ArrowDown: 1, ArrowLeft: 2, ArrowRight: 3 };
+            const key = keyMap[e.key];
+            if (key !== undefined) {
+                e.preventDefault();
+                wasmInstance.game_keydown(key);
+            }
+        });
+
+        async function loadAsciiArt() {
+            try {
+                const [leftRes, rightRes] = await Promise.all([
+                    fetch('/assets/game/gm-left.txt'),
+                    fetch('/assets/game/gm-right.txt')
+                ]);
+                
+                if (leftRes.ok) {
+                    document.getElementById('ascii-left').textContent = await leftRes.text();
+                }
+                if (rightRes.ok) {
+                    document.getElementById('ascii-right').textContent = await rightRes.text();
+                }
+            } catch (err) {
+                console.error("Gagal memuat ASCII art:", err);
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        loadAsciiArt();
+
+    </script>
+    
+</body>
+</html>

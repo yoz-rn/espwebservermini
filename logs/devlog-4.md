@@ -65,17 +65,148 @@ Screenshot sesi ini: Tetris jalan di `http://192.168.1.254/assets/game/tetris.ht
 ## 6. Backlog Baru (dari User, Sesi Berikutnya)
 
 - [ ] **Integrasikan Snek** — WASM & backend sudah siap, tinggal bikin `snek.html` (ngikutin pola `tetris.html`) dan pasang ke `game.html` (dashboard).
-- [ ] **2 game tambahan** — kandidat: Pong, Conway's Game of Life, Minesweeper (belum diputuskan mana yang jalan duluan).
+- [x] **2 game tambahan** — kandidat: Conway's Game of Life dan Minesweeper
 - [ ] **Desain awal Task Monitor** — direncanakan mirip `mtrace`/tooling monitoring task serupa (FreeRTOS task stats real-time ke browser).
 - [ ] **Infrastruktur test lokal** — saat ini aset SVG/TXT gak muncul pas ditest lokal (cuma HTML/CSS/JS/WASM yang kepakai di sandbox test), plus rencana bikin **database emulasi LittleFS 1 MB** buat testing tanpa device fisik.
 - [ ] **Ekspansi File Manager & storage** — cek partisi LittleFS vs kapasitas flash fisik yang sebenarnya, pakai `partitions.csv` (saat ini `GET /api/storage` cuma laporan `LittleFS.totalBytes()`, belum tau proporsinya terhadap partisi/flash penuh).
-- [ ] Struktur folder final akan diisi user sendiri di sesi berikutnya.
 
 ---
 
 ## 7. Known Issues Belum Diperbaiki (Ringkasan)
 
-- [ ] `High Score` tampil `undefined` di UI meski data tersimpan benar di backend — dugaan kuat: mismatch casing `highscore` vs `highScore` antara response JSON dan `game-shell.js`.
+- [x] `High Score` tampil `undefined` di UI meski data tersimpan benar di backend — dugaan kuat: mismatch casing `highscore` vs `highScore` antara response JSON dan `game-shell.js`.
 - [ ] Pitch audio MIDI sedikit meleset dari ekspektasi (ditoleransi, non-blocking).
 - [ ] Next-piece preview Tetris & tombol Pause/Reset — masih stub, ditunda.
 - [ ] Restart Snek belum terhubung ke frontend apa pun (backend siap, `snek.html` belum ada).
+
+## 8. Lampiran
+
+- Struktur Folder (lokal) per sesi
+```
+.
+├── assets
+│   ├── esp32.txt
+│   └── README.md
+├── compress_asset.sh
+├── data
+│   ├── assets
+│   │   ├── core
+│   │   │   ├── sidebar.css
+│   │   │   ├── sidebar.js
+│   │   │   ├── theme.css
+│   │   │   ├── tui-base.css
+│   │   │   └── webaudio-tinysynth.js.gz
+│   │   ├── dashboard
+│   │   │   ├── dashboard.css
+│   │   │   └── dashboard-mobile.css
+│   │   ├── esp32.txt.gz
+│   │   ├── file-manager
+│   │   │   ├── file-manager.css
+│   │   │   ├── file-manager.js
+│   │   │   ├── icons
+│   │   │   │   ├── delete.svg.gz
+│   │   │   │   ├── mkdir.svg.gz
+│   │   │   │   ├── rename.svg.gz
+│   │   │   │   └── upload.svg.gz
+│   │   │   └── maria-system.txt.gz
+│   │   ├── game
+│   │   │   ├── game-ascii.txt.gz
+│   │   │   ├── game.css
+│   │   │   ├── game-layout.css
+│   │   │   ├── game-shell.js
+│   │   │   ├── gm-left.txt.gz
+│   │   │   ├── gm-right.txt.gz
+│   │   │   ├── snek
+│   │   │   │   └── snek.svg.gz
+│   │   │   ├── snek.html
+│   │   │   ├── tetris
+│   │   │   │   ├── tetoris.mid
+│   │   │   │   ├── tetris.svg.gz
+│   │   │   │   └── tetris.wasm
+│   │   │   └── tetris.html
+│   │   ├── gz
+│   │   ├── icons
+│   │   │   ├── dashboard.svg.gz
+│   │   │   ├── file-manager.svg.gz
+│   │   │   ├── game.svg.gz
+│   │   │   ├── task-manager.svg.gz
+│   │   │   └── wifi.svg.gz
+│   │   ├── ost-snek.opus.gz
+│   │   └── wifi-setup
+│   │       ├── wifi-setup.css
+│   │       └── wifi-setup.js
+│   ├── file-manager.html
+│   ├── game.html
+│   ├── index.html
+│   ├── myminegw.avif
+│   ├── README.md
+│   └── wifi-setup.html
+├── include
+│   ├── FileManager.h
+│   ├── GameManager.h
+│   ├── NetworkManager.h
+│   ├── README.md
+│   ├── secrets.EXAMPLES.h
+│   └── TaskManager.h
+├── lib
+│   └── README
+├── LICENSE
+├── logs
+│   ├── devlog-1.md
+│   ├── devlog-2.md
+│   ├── devlog-3.md
+│   ├── devlog-4.md
+│   ├── README.md
+│   └── user-testing.md
+├── platformio.ini
+├── README.md
+├── src
+│   ├── FileManager.cpp
+│   ├── GameManager.cpp
+│   ├── main.cpp
+│   ├── NetworkManager.cpp
+│   ├── README.md
+│   ├── routes
+│   │   ├── FileRoutes.cpp
+│   │   ├── FileRoutes.h
+│   │   ├── GameRoutes.cpp
+│   │   ├── GameRoutes.h
+│   │   ├── ResponseHelper.cpp
+│   │   ├── ResponseHelper.h
+│   │   ├── TaskRoutes.cpp
+│   │   ├── TaskRoutes.h
+│   │   ├── WifiRoutes.cpp
+│   │   └── WifiRoutes.h
+│   └── TaskManager.cpp
+├── test
+│   └── README
+└── wasm
+    ├── common
+    │   └── game_common.h
+    ├── README.md
+    ├── snek
+    │   ├── snek.c
+    │   └── snek.wasm
+    ├── snek-test.html
+    ├── testris
+    │   └── assets
+    │       ├── core
+    │       │   ├── sidebar.css
+    │       │   ├── sidebar.js
+    │       │   ├── theme.css
+    │       │   ├── tui-base.css
+    │       │   └── webaudio-tinysynth.js
+    │       └── game
+    │           ├── game-layout.css
+    │           ├── game-shell.js
+    │           ├── tetris.html
+    │           └── tetris.wasm
+    ├── tetris
+    │   ├── game.c
+    │   ├── game.h
+    │   ├── testris.html
+    │   ├── tetris.wasm
+    │   └── wasm_glue.c
+    └── wasm_build-snek.sh
+```
+

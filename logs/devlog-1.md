@@ -82,13 +82,12 @@ Reboot berikutnya menunjukkan `POWERON_RESET` bersih (bukan crash), kredensial S
 Referensi untuk diseleksi mandiri ke roadmap:
 
 - [ ] Terapkan `namespace WifiApi { constexpr ... }` untuk path route & string status (mengurangi risiko typo yang sudah 2x terjadi)
-- [ ] Cek `common.js` & `style.css` — tercatat 0 byte di LittleFS, kemungkinan belum terisi
-- [ ] Hapus dead code `_sta_ssid`/`_sta_password` dari constructor `NetworkManager`
-- [ ] Navigasi antar halaman (`index.html` ↔ `wifi-setup.html`)
+- [x] Hapus dead code `_sta_ssid`/`_sta_password` dari constructor `NetworkManager`
+- [x] Navigasi antar halaman (`index.html` ↔ `wifi-setup.html`)
 - [ ] Indikator status koneksi (AP-only vs STA connected) di dashboard
 - [ ] Background auto-reconnect loop untuk STA (retry berkala pakai kredensial NVS)
 - [ ] Fitur "lupakan WiFi" — reset kredensial NVS tanpa reflash
-- [ ] Modul File Manager (lanjutan milestone berikutnya, `FileManager.h/.cpp` sudah ada di project)
+- [x] Modul File Manager (lanjutan milestone berikutnya, `FileManager.h/.cpp` sudah ada di project)
 - [ ] Catatan post-mortem ringkas soal 3 insiden crash provisioning, untuk referensi cepat di modul lain
 
 ## Lampiran
