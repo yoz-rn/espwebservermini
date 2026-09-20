@@ -1,72 +1,51 @@
+#include <ArduinoJson.h>
+
 #include "TaskManager.h"
 
-String TaskManager::stateToString(eTaskState state) {
-    switch (state)
-    {
-    case eRunning: return "Running";
-    case eReady: return "Ready";
-    case eBlocked: return "Blocked";
-    case eSuspended: return "Suspended";
-    case eDeleted: return "Deleted";
-    default: return "Invalid";
+#if !CONFIG_FREERTOS_USE_TRACE_FACILITY
+#error "ACTIVATE CONFIG_FREERTOS_USE_TRACE_FACILITY IN sdkconfig.defaults"
+#endif
+#if !CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS
+#error "ACTIVATE CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS IN sdkconfig.defaults"
+#endif
+
+const char* TaskManager::stateName(eTaskState state) {
+    switch (state) {
+        case eRunning: return "Running";
+        case eReady: return "Ready";
+        case eBlocked: return "Blocked";
+        case eSuspended: return "Suspended";
+        case eDeleted: return "Deleted";
+        default: return "Invalid";
     }
 }
 
-std::vector<TaskInfo> TaskManager::getAllTasks() {
-    // /* @brief 
-    //  * pakai buffer statis (_taskStatusBuffer) yang sudah
-    //  * disediakan sebagai member, dipakai ulang tiap panggilan — 
-    //  * menghindari alokasi heap berulang tiap kali endpoint /api/tasks 
-    //  * di-poll dari frontend.
-    //  * 
-    //  * Alternatif "murni dinamis" (Strategi A) kalau nanti mau dicoba:
-    //  * panggil uxTaskGetNumberOfTasks() dulu untuk tahu jumlah task
-    //  * saat ini, lalu alokasikan array/vector persis seukuran itu
-    //  * (misal via std::vector<TaskStatus_t> yang di-resize()).
-    //  * Trade-off: alokasi ulang tiap request, tapi ukuran array
-    //  * selalu pas dengan jumlah task aktual.
-    //  */
+bool TaskManager::toJson(String& out) {
+    if (uxTaskGetNumberOfTasks() > MAX_TASKS) return false;
 
-    // UBaseType_t taskCount = uxTaskGetSystemState(
-    // _taskStatusBuffer,
-    // MAX_TASKS,
-    // NULL
-    // );
+    uint32_t total = 0;
+    UBaseType_t count = uxTaskGetSystemState(_buf, MAX_TASKS, &total);
+    if (count == 0) return false;
 
-    std::vector<TaskInfo> result;
-    // result.reserve(taskCount);
-
-    // for (UBaseType_t i = 0; i < taskCount; i++) {
-    //     TaskInfo info;
-    //     info.name = String(_taskStatusBuffer[i].pcTaskName);
-    //     info.priority = _taskStatusBuffer[i].eCurrentState == eDeleted
-    //     ? 0
-    //     : _taskStatusBuffer[i].uxCurrentPriority;
-    //     info.state = _taskStatusBuffer[i].eCurrentState;
-    //     info.stackHighWaterMark = _taskStatusBuffer[i].usStackHighWaterMark;
-
-    //     result.push_back(info);
-    // }
-    return result;
-    
-}
-
-String TaskManager::toJson() {
     JsonDocument doc;
-    JsonArray arr = doc.to<JsonArray>();
+    doc["success"] = true;
+    doc["total"] = total;
+    JsonArray tasks = doc["tasks"].to<JsonArray>();
 
-    std::vector<TaskInfo> tasks = getAllTasks();
-
-    for (const TaskInfo& task: tasks) {
-        JsonObject obj = arr.add<JsonObject>();
-        obj["name"] = task.name;
-        obj["priority"] = task.state;
-        obj["state"] = task.state;
-        obj["stackHighWaterMark"] = task.stackHighWaterMark;
+    for (UBaseType_t i = 0; i < count; i++) {
+        const TaskStatus_t& s = _buf[i];
+        JsonObject t = tasks.add<JsonObject>();
+        t["n"] = s.xTaskNumber;
+        t["name"] = s.pcTaskName;
+        t["state"] = stateName(s.eCurrentState);
+        t["prio"] = s.uxCurrentPriority;
+        t["free"] = s.usStackHighWaterMark;
+        t["rt"] = s.ulRunTimeCounter;
+        #if CONFIG_FREERTOS_VTASKLIST_INCLUDE_COREID
+        t["core"] = (s.xCoreID == tskNO_AFFINITY) ? -1 : (int)s.xCoreID;
+        #endif
     }
-
-    String output;
-    serializeJson(doc, output);
-    
-    return output;
+    out = "";
+    serializeJson(doc, out);
+    return true;
 }

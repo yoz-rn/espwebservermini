@@ -133,6 +133,7 @@ This project won't come this far without the divine blessing of the internet (an
 * UI/UX
     * [system24](https://betterdiscord.app/themes/system24) theme for BetterDiscord
     * [spicetify-tui](https://github.com/AvinashReddy3108/spicetify-tui.git) theme for spicetify
+    * [btop](https://github.com/aristocratos/btop) for Task Monitor
 
 * Library
     * [webaudio-tinysynth](https://github.com/g200kg/webaudio-tinysynth) for MIDI Player

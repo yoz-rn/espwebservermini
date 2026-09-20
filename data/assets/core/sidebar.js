@@ -20,10 +20,10 @@ const sidebarTemplate = `
             <span class="label">File Manager</span>
         </a>
 
-        <span class="sidebar-item disabled">
-            <span class="icon" style="--icon-url: url('/assets/icons/task-manager.svg')"></span>
-            <span class="label">Task Manager</span>
-        </span>
+        <a href="/task-monitor.html" class="sidebar-item" data-path="/task-monitor.html">
+            <span class="icon" style="--icon-url: url('/assets/icons/task-monitor.svg')"></span>
+            <span class="label">Task Monitor</span>
+        </a>
 
         <!-- Menu Dropdown Games -->
         <div class="sidebar-dropdown">
