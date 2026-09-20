@@ -49,8 +49,8 @@ Focus on the user interface and the ability to manage files in the device’s me
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on advanced technology experiments to present interactive applications.
 - [x] **Tetris:** Playable in the *browser* and verified on the physical device
-- [x] **Snek:** Like Tetris, but snek
-- [x] **MIDI Audio System:** A super-small filesize background music player (*soundtrack*) to complement the games
+- [x] **Snek:** Playable in the *browser*, with persistent high scores
+- [x] **8-bit Audio System:** A retro background music player (*soundtrack*) to complement the games
 - [x] **Persistent High Scores:** Scores are saved on the device and shown in the game UI
 - [x] **High-Performance Optimization (WebAssembly):** Freestanding C compiled to WASM, so games run smoothly without a heavy runtime
 - [ ] **Tetris Polish:** Next-piece preview, pause and reset buttons
@@ -58,7 +58,8 @@ Focus on advanced technology experiments to present interactive applications.
 
 ### Phase 4: Monitoring & Tooling
 Focus on observing the device and making development easier.
-- [ ] **Task Monitor:** Real-time FreeRTOS task stats streamed to the *browser*
+- [x] **Task Monitor:** A btop-style *browser* page showing every FreeRTOS task with per-task and per-core CPU load, state, priority, core, and free stack (requires the hybrid Arduino + ESP-IDF build)
+- [ ] **Memory Monitor:** Free heap, lowest free heap since boot, and heap size
 - [ ] **Local Test Environment:** An emulated 1 MB LittleFS so the frontend can be tested without the physical device
 
 # GETTING STARTED
