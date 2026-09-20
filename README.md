@@ -49,8 +49,8 @@ Focus on the user interface and the ability to manage files in the device’s me
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on advanced technology experiments to present interactive applications.
 - [x] **Tetris:** Playable in the *browser* and verified on the physical device
-- [x] **Snek:** WASM backend is done, frontend page still needs to be integrated
-- [x] **8-bit Audio System:** A retro background music player (*soundtrack*) to complement the games
+- [x] **Snek:** Like Tetris, but snek
+- [x] **MIDI Audio System:** A super-small filesize background music player (*soundtrack*) to complement the games
 - [x] **Persistent High Scores:** Scores are saved on the device and shown in the game UI
 - [x] **High-Performance Optimization (WebAssembly):** Freestanding C compiled to WASM, so games run smoothly without a heavy runtime
 - [ ] **Tetris Polish:** Next-piece preview, pause and reset buttons
@@ -76,7 +76,9 @@ Install these various ~sh*t~
     ```
     git clone https://github.com/yoz-rn/espwebservermini.git
     ```
-2. Configuring the network credentials
+2. Open your VS Code Application
+
+3. Configuring the network credentials
     ```
     cp include/secrets.EXAMPLES.h include/secrets.h
     ```
@@ -89,7 +91,7 @@ Install these various ~sh*t~
 
 1. Building the project
 
-    Use the `Build` button or copy the command below
+    Use the `Build` button
     
 
 2. Uploading the project
@@ -107,7 +109,7 @@ Install these various ~sh*t~
 ## Access the dashboard
 
 1. Connect to your ESP using its AP Mode
-2. Copy the link below (by default, its IP is 192.168.1.254)
+2. Copy the link below (by default, its IP is 192.168.1.254) and open it in your favorite broswer
 
     ```
     http://192.168.1.254/index.html

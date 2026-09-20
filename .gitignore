@@ -13,3 +13,9 @@ backup
 
 !assets/esp32.txt
 !assets/README.md
+
+components/
+managed_components/
+dependencies.lock
+sdkconfig.*
+!/sdkconfig.defaults
