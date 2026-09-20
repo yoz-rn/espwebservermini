@@ -27,6 +27,32 @@ AsyncWebServer server(80);
 /* Honestly, idk why this indent
  * only use 2 spaces instead of 4
  */
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+void printTasks() {
+  UBaseType_t n = uxTaskGetNumberOfTasks();
+  TaskStatus_t* arr = (TaskStatus_t*)pvPortMalloc(n * sizeof(TaskStatus_t));
+  if (!arr) return;
+
+  uint32_t totalRuntime;
+  n = uxTaskGetSystemState(arr, n, &totalRuntime);
+
+  for (UBaseType_t i = 0; i < n; i++) {
+        Serial.printf("%-16s state=%d prio=%u stackFree=%u",
+                  arr[i].pcTaskName,
+                  (int)arr[i].eCurrentState,
+                  (unsigned)arr[i].uxCurrentPriority,
+                  (unsigned)arr[i].usStackHighWaterMark);
+#if CONFIG_FREERTOS_VTASKLIST_INCLUDE_COREID
+    Serial.printf(" core=%d", (int)arr[i].xCoreID);
+#endif
+    Serial.println();
+  }
+  vPortFree(arr);
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -74,6 +100,8 @@ void setup() {
 
 
   Serial.println("[Server] HTTP Server berjalan di latar belakang.");
+
+  printTasks();
 
 }
 
