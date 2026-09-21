@@ -34,6 +34,24 @@
             </div>
         </div>
 
+        <div class="tui-panel" data-label="mem">
+            <div class="tm-core">
+                <span class="tm-core-label">MEM</span>
+                <div class="bar"><div class="bar-fill" id="bar-heap-used"></div></div>
+                <span class="tm-pct" id="txt-heap-used">--</span>
+            </div>
+            <div class="tm-core">
+                <span class="tm-core-label">PEAK</span>
+                <div class="bar"><div class="bar-fill" id="bar-heap-peak"></div></div>
+                <span class="tm-pct" id="txt-heap-peak">--</span>
+            </div>
+            <div class="tm-meta">
+                total <span id="heap-size">--</span> ·
+                free <span id="heap-free">--</span> ·
+                largest block <span id="heap-blk">--</span>
+            </div>
+        </div>
+
         <div class="tui-panel" data-label="proc">
             <div class="tm-table-scroll">
                 <table class="tm-table">

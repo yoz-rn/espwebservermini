@@ -1,9 +1,14 @@
 /* THE MOST READABLE PIECE OF C++ CODE
  * YOU WILL HAVE EVER SEEN
  * (I'M GOING CLINICALLY INSANE)
+ * 
+ * WAIT TILL YOU SEE THE TASKMANAGER MODULE
  */
 
+#include <esp_log.h>
 #include "NetworkManager.h"
+
+static const char* TAG = "network";
 
 struct ProvisioningTaskParams {
     NetworkManager* instance;
@@ -14,87 +19,59 @@ struct ProvisioningTaskParams {
 NetworkManager::NetworkManager(const char* ssid, const char* password) {
     _ssid = ssid;
     _password = password;
-    _networkTaskHandle = NULL;
     _provisioningMutex = xSemaphoreCreateMutex();
 }
 
 bool NetworkManager::beginAP() {
-    Serial.println("AP Initializing...");
+    if (_started) {
+        ESP_LOGW(TAG, "beginAP() dipanggil dua kali, diabaikan");
+        return false;
+    }
+    
+    if (_ssid == nullptr || strlen(_ssid) == 0) {
+        Serial.println("ssid kosong");
+        return false;
+    }
+
+    WiFi.onEvent([this](arduino_event_id_t event, arduino_event_info_t info) {
+        onWifiEvent(event, info);
+    });
 
     IPAddress local_ip(192, 168, 1, 254);
     IPAddress gateway(192, 168, 1, 254);
     IPAddress subnet(255, 255, 255, 0);
     WiFi.softAPConfig(local_ip, gateway, subnet);
 
-    if (_networkTaskHandle != NULL) {
-        Serial.println("udah jalan");
-        return false;
-    } 
-
-    if (_ssid == nullptr || strlen(_ssid) == 0) {
-        Serial.println("ssid kosong");
-        return false;
-    }
-
     WiFi.mode(WIFI_AP_STA);
     if (!WiFi.softAP(_ssid, _password)) {
-        Serial.println("softAP gagal");
+        ESP_LOGE(TAG, "SoftAP Failed");
         return false;
     }
 
-    BaseType_t result = xTaskCreatePinnedToCore(
-        NetworkManager::taskWrapper,
-        "NetworkTask",
-        4096,
-        this,
-        1,
-        &_networkTaskHandle,
-        1
-    );
-
-    if (result != pdPASS) {
-        Serial.println("gagal init task monitor");
-        return false;
-    }
-
-    Serial.println("Berhasil inisialisasi");
+    _started = true;
+    ESP_LOGI(TAG, "AP Active: %s", _ssid);
     return true;
 }
 
 bool NetworkManager::beginSTA(unsigned long timeoutMs) {
-    Serial.println("STA Initializing...");
 
     _prefs.begin("wifi-config", true); // read-0nly
     String savedSsid = _prefs.getString("ssid", "");
     String savedPassword = _prefs.getString("password", "");
     _prefs.end();
 
-    if (!testSTACredentials(savedSsid, savedPassword, timeoutMs)) {
-        Serial.println("STA gagal connect ke router");
+    if (savedSsid.length() == 0) {
+        ESP_LOGI(TAG, "No STA Credentials. Running AP-Only mode");
         return false;
     }
-    
-    Serial.print("STA connected, IP: ");
-    Serial.println(WiFi.localIP());
 
-    MDNS.begin("esp32") ? Serial.println("mDNS responder aktif: http://esp32.local")
-                        : Serial.println("mDNS gagal start");
-
+    if (!testSTACredentials(savedSsid, savedPassword, timeoutMs)) {
+        ESP_LOGW(TAG, "STA failed to connect to \"%s\"", savedSsid.c_str());
+        return false;
+    }
+        
     return true;
 
-}
-
-void NetworkManager::taskWrapper(void* _this) {
-    NetworkManager* instance = static_cast<NetworkManager*>(_this);
-    instance->taskLoop();
-}
-
-void NetworkManager::taskLoop() {
-    for(;;) {
-        uint8_t clientCount = WiFi.softAPgetStationNum();
-        Serial.printf("[Network Task] Klien terhubung: %d\n", clientCount);
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
-    }
 }
 
 bool NetworkManager::hasSavedCredentials() {
@@ -190,6 +167,33 @@ void NetworkManager::provisioningTaskWrapper(void* pvParameters) {
     vTaskDelete(NULL);
 }
 
+void NetworkManager::onWifiEvent(arduino_event_id_t event, arduino_event_info_t info) {
+    switch (event) {
+        case ARDUINO_EVENT_WIFI_AP_STACONNECTED:
+            ESP_LOGI(TAG, "AP: klien tersambung " MACSTR, MAC2STR(info.wifi_ap_staconnected.mac));
+            break;
+        case ARDUINO_EVENT_WIFI_AP_STADISCONNECTED:
+            ESP_LOGI(TAG, "AP: klien putus " MACSTR, MAC2STR(info.wifi_ap_stadisconnected.mac));
+            break;
+        case ARDUINO_EVENT_WIFI_STA_GOT_IP:
+            _staConnected = true;
+            ESP_LOGI(TAG, "STA tersambung, IP: " IPSTR, IP2STR(&info.got_ip.ip_info.ip));
+            if (MDNS.begin("esp32")) ESP_LOGI(TAG, "mDNS aktif: http://esp32.local");
+            else                     ESP_LOGE(TAG, "mDNS gagal start");
+            break;
+        case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+            if (_staConnected) {                 // baru saja terputus dari kondisi tersambung
+                _staConnected = false;
+                MDNS.end();
+                ESP_LOGW(TAG, "STA terputus (alasan %d)", info.wifi_sta_disconnected.reason);
+            } else {                             // percobaan gagal: tidak perlu berisik
+                ESP_LOGD(TAG, "STA gagal menyambung (alasan %d)", info.wifi_sta_disconnected.reason);
+            }
+            break;
+        default:
+            break;
+    }
+}
 
 /*
  * GETTER

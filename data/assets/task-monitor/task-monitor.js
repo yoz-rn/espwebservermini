@@ -17,6 +17,25 @@ function stackClass(free) {         // sisa stack dalam byte
     return "";
 }
 
+function fmtBytes(n) {
+    return n >= 1024 ? (n / 1024).toFixed(1) + " KiB" : n + " B";
+}
+
+function showHeap(h) {
+    if (!h) return;                    // firmware lama tanpa field heap
+    const used = h.size - h.free;      // dipakai sekarang
+    const peak = h.size - h.min;       // titik pemakaian tertinggi sejak boot
+    const pct = (v) => (100 * v) / h.size;
+
+    setBar($("bar-heap-used"), pct(used));
+    setBar($("bar-heap-peak"), pct(peak));
+    $("txt-heap-used").textContent = fmtBytes(used) + " " + pct(used).toFixed(1) + "%";
+    $("txt-heap-peak").textContent = fmtBytes(peak) + " " + pct(peak).toFixed(1) + "%";
+    $("heap-size").textContent = fmtBytes(h.size);
+    $("heap-free").textContent = fmtBytes(h.free);
+    $("heap-blk").textContent = fmtBytes(h.blk);
+}
+
 function setBar(fillEl, pct, forced) {
     const v = pct == null ? 0 : Math.min(100, Math.max(0, pct));
     fillEl.style.width = v + "%";
@@ -79,7 +98,9 @@ $("interval").addEventListener("change", (e) => {
 poll();
 
 function render(data) {
-    const cur = { total: data.total, rt: new Map(data.tasks.map((t) => [t.n, t.rt])) };
+    
+    const cur = { total: data.total, up: data.up, rt: new Map(data.tasks.map((t) => [t.n, t.rt])) };
+    if (prev && data.up < prev.up) prev = null;   // uptime mundur = reboot
     const dTotal = prev ? (cur.total - prev.total) >>> 0 : 0;
 
     const rows = data.tasks.map((t) => {
@@ -93,6 +114,8 @@ function render(data) {
     const idlePct = (name) => rows.find((r) => r.name === name)?.pct;
     showCore(0, idlePct("IDLE0"));
     showCore(1, idlePct("IDLE1"));
+
+    showHeap(data.heap);
 
     // Task nyata dulu (CPU terbesar di atas), task idle paling bawah
     rows.sort((a, b) => {
@@ -121,13 +144,15 @@ function render(data) {
 }
 
 function showCore(n, idlePct) {
+
     const load = idlePct == null ? null : Math.max(0, 100 - idlePct);
     setBar($("bar-core" + n), load);
     $("pct-core" + n).textContent = load == null ? "--" : load.toFixed(1) + "%";
 }
 
-function cell(text) {
+function cell(text, cls) {
     const td = document.createElement("td");
-    td.textContent = text;   // textContent, bukan innerHTML: nama task tidak pernah ditafsirkan sebagai HTML
+    td.textContent = text;
+    if (cls) td.className = cls;
     return td;
 }

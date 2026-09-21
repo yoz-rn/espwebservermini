@@ -2,15 +2,21 @@
 
 /* Bar bersegmen ala btop: track redup + isi terang, pola 8px yang sama */
 .bar {
+    position: relative;
     flex: 1; height: 0.9rem;
+}
+.bar::before {                 /* lintasan: redup, terpisah dari isi */
+    content: ""; position: absolute; inset: 0;
     background: repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 8px);
-    opacity: 0.9;
+    opacity: 0.35;
 }
 .bar-fill {
+    position: relative;        /* supaya berada di atas lintasan */
     height: 100%; width: 0;
     background: repeating-linear-gradient(90deg, var(--bar-color) 0 6px, transparent 6px 8px);
     transition: width 0.4s ease;
 }
+
 .bar-fill.ok   { --bar-color: var(--ok); }
 .bar-fill.warn { --bar-color: var(--warn); }
 .bar-fill.crit { --bar-color: var(--crit); }
@@ -18,8 +24,8 @@
 .bar-sm { flex: none; width: 6rem; height: 0.7rem; }
 
 .tm-core { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
-.tm-core-label { width: 2ch; color: var(--text-muted); }
-.tm-pct { width: 6ch; text-align: right; }
+.tm-core-label { width: 4ch; color: var(--text-muted); }
+.tm-pct { width: 17ch; text-align: right; white-space: nowrap; }
 .tm-meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; }
 .tm-meta select {
     background: var(--bg-main); color: var(--text-main);

@@ -199,22 +199,22 @@ Kekurangan yang terlihat: sel tabel tanpa padding (kolom "Suspended" menempel ke
 **Belum diuji ulang setelah migrasi hybrid** (perilaku lama diuji di konfigurasi Arduino):
 - [ ] Provisioning Wi-Fi + reboot (kredensial NVS terbaca, terutama setelah tabel partisi berubah).
 - [ ] mDNS `esp32.local`.
-- [ ] Upload/hapus file di File Manager, Tetris/Snek, high score (termasuk `result.highScore` pada alert rekor Snek: casing POST belum diverifikasi).
+- [x] Upload/hapus file di File Manager, Tetris/Snek, high score (termasuk `result.highScore` pada alert rekor Snek: casing POST belum diverifikasi).
 - [ ] Nilai default runtime yang bisa berubah di hybrid: frekuensi CPU (IDF biasanya 160 MHz, Arduino 240 MHz), watchdog idle core 1, stack `loopTask`. Cek dengan `grep -nE "DEFAULT_CPU_FREQ|TASK_WDT|ARDUINO_LOOP_STACK|ARDUINO_RUNNING_CORE" sdkconfig.<env>`.
 
 **Perlu dipastikan sebelum merge ke `main`:**
-- [ ] `partitions.csv` dan opsi trace di `sdkconfig.defaults` ter-commit; uji clone bersih ulang setelah semuanya final (satu kali saja, tiap perubahan konfigurasi memicu build penuh ≈ 3 menit).
+- [x] `partitions.csv` dan opsi trace di `sdkconfig.defaults` ter-commit; uji clone bersih ulang setelah semuanya final (satu kali saja, tiap perubahan konfigurasi memicu build penuh ≈ 3 menit).
 - [ ] `sdkconfig.defaults` masih dump penuh (790+ baris), idealnya hanya berisi opsi yang berbeda dari default. Dipangkas di sesi tersendiri.
 - [ ] README: langkah `setup.sh`, catatan partisi, dan tiga temuan di §1.
-- [ ] Ruang firmware setelah tabel partisi baru (sebelumnya 86% dari 1 MB), ukur ulang.
+- [x] Ruang firmware setelah tabel partisi baru (sebelumnya 86% dari 1 MB), ukur ulang.
 - [ ] Coba esp_littlefs versi lebih baru sebagai eksperimen terpisah.
 
 **Task Monitor:**
-- [ ] Konfirmasi UI v2 dan tautan sidebar/dashboard berjalan.
+- [x] Konfirmasi UI v2 dan tautan sidebar/dashboard berjalan.
 - [ ] **Panel `mem` (heap)**: heap bebas, minimum sepanjang hidup, ukuran heap (butuh field tambahan di backend), dikerjakan di sesi terpisah.
 - [ ] Sort per kolom lewat klik header.
-- [ ] Seragamkan penamaan "Task Manager" vs "Task Monitor".
-- [ ] Pindahkan handler server global (`/`, `onNotFound`, `serveStatic`) keluar dari `registerTaskRoutes`.
+- [x] Seragamkan penamaan "Task Manager" vs "Task Monitor".
+- [x] Pindahkan handler server global (`/`, `onNotFound`, `serveStatic`) keluar dari `registerTaskRoutes`.
 
 **Lama yang masih terbuka:** next-piece dan pause/reset Tetris, protected files list, 409 "Directory not empty" di UI, database emulasi LittleFS 1 MB untuk test lokal, `GET /api/storage` vs partisi fisik.
 
@@ -268,6 +268,130 @@ Kekurangan yang terlihat: sel tabel tanpa padding (kolom "Suspended" menempel ke
         ├── game/snek.html       (baru)
         ├── game/game-layout.css (.canvas-square, .container-square)
         └── task-monitor/        (baru: task-monitor.js, task-monitor.css)
+```
+
+Struktur folder sekarang
+```
+.
+├── assets
+│   ├── esp32.txt
+│   └── README.md
+├── CMakeLists.txt
+├── compress_asset.sh
+├── data
+├── include
+│   ├── FileManager.h
+│   ├── GameManager.h
+│   ├── NetworkManager.h
+│   ├── README.md
+│   ├── secrets.EXAMPLES.h
+│   └── TaskManager.h
+├── lib
+│   └── README
+├── LICENSE
+├── logs
+│   ├── devlog-1.md
+│   ├── devlog-2.md
+│   ├── devlog-3.md
+│   ├── devlog-4.md
+│   ├── devlog-5.md
+│   ├── README.md
+│   └── user-testing.md
+├── partitions.csv
+├── platformio.ini
+├── README.md
+├── sdkconfig.defaults
+├── setup.sh
+├── src
+│   ├── CMakeLists.txt
+│   ├── FileManager.cpp
+│   ├── GameManager.cpp
+│   ├── main.cpp
+│   ├── NetworkManager.cpp
+│   ├── README.md
+│   ├── routes
+│   │   ├── FileRoutes.cpp
+│   │   ├── FileRoutes.h
+│   │   ├── GameRoutes.cpp
+│   │   ├── GameRoutes.h
+│   │   ├── ResponseHelper.cpp
+│   │   ├── ResponseHelper.h
+│   │   ├── TaskRoutes.cpp
+│   │   ├── TaskRoutes.h
+│   │   ├── WifiRoutes.cpp
+│   │   └── WifiRoutes.h
+│   └── TaskManager.cpp
+├── test
+│   └── README
+└── wasm
+```
+> [!NOTE]
+> File wasm merupakan bundle proyek yang menggunakan wasm, kurang relevan untuk diperlihatkan
+
+Filesystem Image (Struktur folder yang berada di dalam LittleFS (/data))
+```
+.
+├── assets
+│   ├── core
+│   │   ├── sidebar.css
+│   │   ├── sidebar.js
+│   │   ├── theme.css
+│   │   ├── tui-base.css
+│   │   └── webaudio-tinysynth.js.gz
+│   ├── dashboard
+│   │   ├── dashboard.css
+│   │   └── dashboard-mobile.css
+│   ├── esp32.txt.gz
+│   ├── file-manager
+│   │   ├── file-manager.css
+│   │   ├── file-manager.js
+│   │   ├── icons
+│   │   │   ├── delete.svg.gz
+│   │   │   ├── mkdir.svg.gz
+│   │   │   ├── rename.svg.gz
+│   │   │   └── upload.svg.gz
+│   │   └── maria-system.txt.gz
+│   ├── game
+│   │   ├── game-ascii.txt.gz
+│   │   ├── game.css
+│   │   ├── game-layout.css
+│   │   ├── game-shell.js
+│   │   ├── gm-left.txt.gz
+│   │   ├── gm-right.txt.gz
+│   │   ├── snek
+│   │   │   ├── snek.mid
+│   │   │   ├── snek.svg.gz
+│   │   │   └── snek.wasm
+│   │   ├── snek.html
+│   │   ├── tetris
+│   │   │   ├── tetoris.mid
+│   │   │   ├── tetris.svg.gz
+│   │   │   └── tetris.wasm
+│   │   └── tetris.html
+│   ├── gz
+│   │   ├── dashboard.svg.gz
+│   │   ├── game-ascii.txt.gz
+│   │   └── maria-wifi.svg.gz
+│   ├── icons
+│   │   ├── dashboard.svg.gz
+│   │   ├── file-manager.svg.gz
+│   │   ├── game.svg.gz
+│   │   ├── task-manager.svg.gz
+│   │   └── wifi.svg.gz
+│   ├── ost-snek.opus.gz
+│   ├── task-monitor
+│   │   ├── task-monitor.css
+│   │   └── task-monitor.js
+│   └── wifi-setup
+│       ├── wifi-setup.css
+│       └── wifi-setup.js
+├── file-manager.html
+├── game.html
+├── index.html
+├── myminegw.avif
+├── README.md
+├── task-monitor.html
+└── wifi-setup.html
 ```
 
 ### Konfigurasi kunci (`sdkconfig.defaults`, bagian yang diubah di sesi ini)
