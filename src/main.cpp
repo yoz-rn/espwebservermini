@@ -27,6 +27,7 @@ AsyncWebServer server(80);
 /* Honestly, idk why this indent
  * only use 2 spaces instead of 4
  */
+
 void setup() {
   Serial.begin(115200);
 
@@ -67,13 +68,16 @@ void setup() {
   registerFileRoutes(server, myFile);
   
   server.serveStatic("/", LittleFS, "/");
-
-
-
   server.begin();
 
-
   Serial.println("[Server] HTTP Server berjalan di latar belakang.");
+
+/* Initial debugging
+ * Probing the system to test its fundamental
+ */
+
+  // myTask.printTasks(); Uncomment this line to list available FreeRTOS Tasks.
+  // myTask.printCpuLoad(); Uncomment this line to print CPU Load
 
 }
 

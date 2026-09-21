@@ -1,31 +1,16 @@
 #pragma once
 
 #include <Arduino.h>
-#include <vector>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <ArduinoJson.h>
 
-// #define configUSE_TRACE_FACILITY 1
-
-struct TaskInfo {
-    String name;
-    UBaseType_t priority;
-    eTaskState state;
-    uint32_t stackHighWaterMark;
-
-};
-
-class TaskManager{
-    
+class TaskManager {
     public:
-    std::vector<TaskInfo> getAllTasks();
-    String toJson();
-    
+    bool toJson(String& out);
+
+    void printTasks();
+    void printCpuLoad();
+
     private:
-    static const UBaseType_t MAX_TASKS = 32;
-    TaskStatus_t _taskStatusBuffer[MAX_TASKS];
-    String stateToString(eTaskState state);
-    
-    
+    static const UBaseType_t MAX_TASKS = 48;
+    TaskStatus_t _buf[MAX_TASKS];
+    static const char* stateName(eTaskState state);
 };

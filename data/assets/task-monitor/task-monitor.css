@@ -1,0 +1,50 @@
+.tm { --ok: var(--accent); --warn: #d9b26f; --crit: #d96f6f; }
+
+/* Bar bersegmen ala btop: track redup + isi terang, pola 8px yang sama */
+.bar {
+    position: relative;
+    flex: 1; height: 0.9rem;
+}
+.bar::before {                 /* lintasan: redup, terpisah dari isi */
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 8px);
+    opacity: 0.35;
+}
+.bar-fill {
+    position: relative;        /* supaya berada di atas lintasan */
+    height: 100%; width: 0;
+    background: repeating-linear-gradient(90deg, var(--bar-color) 0 6px, transparent 6px 8px);
+    transition: width 0.4s ease;
+}
+
+.bar-fill.ok   { --bar-color: var(--ok); }
+.bar-fill.warn { --bar-color: var(--warn); }
+.bar-fill.crit { --bar-color: var(--crit); }
+.bar-fill.dim  { --bar-color: var(--text-muted); }
+.bar-sm { flex: none; width: 6rem; height: 0.7rem; }
+
+.tm-core { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
+.tm-core-label { width: 4ch; color: var(--text-muted); }
+.tm-pct { width: 17ch; text-align: right; white-space: nowrap; }
+.tm-meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+.tm-meta select {
+    background: var(--bg-main); color: var(--text-main);
+    border: 1px solid var(--border); font-family: inherit;
+}
+
+/* overflow di anak, bukan di .tui-panel (prinsip devlog-3) */
+.tm-table-scroll { overflow-x: auto; }
+.tm-table { width: 100%; border-collapse: collapse; }
+.tm-table th, .tm-table td {
+    padding: 0.15rem 1rem 0.15rem 0; white-space: nowrap; text-align: left;
+}
+.tm-table th { color: var(--accent); border-bottom: 1px dashed var(--border); }
+.tm-table .num { text-align: right; }
+.tm-table td.warn { color: var(--warn); }
+.tm-table td.crit { color: var(--crit); }
+.tm-table tr.idle { color: var(--text-muted); }
+.st-running { color: var(--accent); font-weight: bold; }
+.st-blocked, .st-suspended { color: var(--text-muted); }
+
+.cell-bar { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+.cell-bar span { width: 6ch; text-align: right; }

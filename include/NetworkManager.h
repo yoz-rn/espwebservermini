@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <Preferences.h>
+#include <atomic>
 
 class NetworkManager {
     public:
@@ -18,13 +19,12 @@ class NetworkManager {
     const char* _ssid;
     const char* _password;
 
+    bool _started = false;
+    std::atomic<bool> _staConnected{false};
+    void onWifiEvent(arduino_event_id_t event, arduino_event_info_t info);
+
     Preferences _prefs;
-
-    TaskHandle_t _networkTaskHandle;
-
-    static void taskWrapper(void* _this);
-    void taskLoop();
-
+    
     ProvisioiningStatus _provisioningStatus = ProvisioiningStatus::IDLE;
     String _provisioningMessage;
     SemaphoreHandle_t _provisioningMutex;

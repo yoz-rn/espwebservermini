@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Monitor - ESP32</title>
+
+    <link rel="stylesheet" href="/assets/core/theme.css">
+    <link rel="stylesheet" href="/assets/core/tui-base.css">
+    <link rel="stylesheet" href="/assets/core/sidebar.css">
+    <link rel="stylesheet" href="/assets/task-monitor/task-monitor.css">
+</head>
+<body>
+    <main class="main-content tm">
+        <div class="tui-panel" data-label="cpu">
+            <div class="tm-core">
+                <span class="tm-core-label">C0</span>
+                <div class="bar"><div class="bar-fill" id="bar-core0"></div></div>
+                <span class="tm-pct" id="pct-core0">--</span>
+            </div>
+            <div class="tm-core">
+                <span class="tm-core-label">C1</span>
+                <div class="bar"><div class="bar-fill" id="bar-core1"></div></div>
+                <span class="tm-pct" id="pct-core1">--</span>
+            </div>
+            <div class="tm-meta">
+                <span id="status">connecting</span> · <span id="task-count">0</span> tasks ·
+                refresh
+                <select id="interval">
+                    <option value="1000">1s</option>
+                    <option value="2000">2s</option>
+                    <option value="5000">5s</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tui-panel" data-label="mem">
+            <div class="tm-core">
+                <span class="tm-core-label">MEM</span>
+                <div class="bar"><div class="bar-fill" id="bar-heap-used"></div></div>
+                <span class="tm-pct" id="txt-heap-used">--</span>
+            </div>
+            <div class="tm-core">
+                <span class="tm-core-label">PEAK</span>
+                <div class="bar"><div class="bar-fill" id="bar-heap-peak"></div></div>
+                <span class="tm-pct" id="txt-heap-peak">--</span>
+            </div>
+            <div class="tm-meta">
+                total <span id="heap-size">--</span> ·
+                free <span id="heap-free">--</span> ·
+                largest block <span id="heap-blk">--</span>
+            </div>
+        </div>
+
+        <div class="tui-panel" data-label="proc">
+            <div class="tm-table-scroll">
+                <table class="tm-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th><th class="num">Core</th><th class="num">Prio</th>
+                            <th>State</th><th class="num">Stack free</th><th class="num">CPU</th>
+                        </tr>
+                    </thead>
+                    <tbody id="task-rows"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/core/sidebar.js"></script>
+    <script src="/assets/task-monitor/task-monitor.js"></script>
+</body>
+</html>

@@ -64,9 +64,9 @@ Screenshot sesi ini: Tetris jalan di `http://192.168.1.254/assets/game/tetris.ht
 
 ## 6. Backlog Baru (dari User, Sesi Berikutnya)
 
-- [ ] **Integrasikan Snek** — WASM & backend sudah siap, tinggal bikin `snek.html` (ngikutin pola `tetris.html`) dan pasang ke `game.html` (dashboard).
+- [x] **Integrasikan Snek** — WASM & backend sudah siap, tinggal bikin `snek.html` (ngikutin pola `tetris.html`) dan pasang ke `game.html` (dashboard).
 - [x] **2 game tambahan** — kandidat: Conway's Game of Life dan Minesweeper
-- [ ] **Desain awal Task Monitor** — direncanakan mirip `mtrace`/tooling monitoring task serupa (FreeRTOS task stats real-time ke browser).
+- [x] **Desain awal Task Monitor** — direncanakan mirip `mtrace`/tooling monitoring task serupa (FreeRTOS task stats real-time ke browser).
 - [ ] **Infrastruktur test lokal** — saat ini aset SVG/TXT gak muncul pas ditest lokal (cuma HTML/CSS/JS/WASM yang kepakai di sandbox test), plus rencana bikin **database emulasi LittleFS 1 MB** buat testing tanpa device fisik.
 - [ ] **Ekspansi File Manager & storage** — cek partisi LittleFS vs kapasitas flash fisik yang sebenarnya, pakai `partitions.csv` (saat ini `GET /api/storage` cuma laporan `LittleFS.totalBytes()`, belum tau proporsinya terhadap partisi/flash penuh).
 
@@ -77,7 +77,7 @@ Screenshot sesi ini: Tetris jalan di `http://192.168.1.254/assets/game/tetris.ht
 - [x] `High Score` tampil `undefined` di UI meski data tersimpan benar di backend — dugaan kuat: mismatch casing `highscore` vs `highScore` antara response JSON dan `game-shell.js`.
 - [ ] Pitch audio MIDI sedikit meleset dari ekspektasi (ditoleransi, non-blocking).
 - [ ] Next-piece preview Tetris & tombol Pause/Reset — masih stub, ditunda.
-- [ ] Restart Snek belum terhubung ke frontend apa pun (backend siap, `snek.html` belum ada).
+- [x] Restart Snek belum terhubung ke frontend apa pun (backend siap, `snek.html` belum ada).
 
 ## 8. Lampiran
 

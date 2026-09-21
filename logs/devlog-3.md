@@ -98,7 +98,6 @@ Dua perubahan berikut dilakukan user sendiri, tidak lewat pembahasan chat, dicat
 - [ ] Protected files list — blocklist path kritikal.
 - [ ] Concurrency fix untuk Create (state upload per-request, bukan member variable tunggal) — belum mendesak karena upload masih single-file.
 - [x] Restyle responsive design menyeluruh (breakpoint sudah ada parsial di file-manager grid & sidebar, belum diverifikasi di semua halaman/ukuran layar).
-- [ ] Task Manager — sisa satu fitur proyeksi utama proyek, belum dimulai sama sekali.
 
 ## Lampiran
 
