@@ -48,7 +48,7 @@ Focus on the user interface and the ability to manage files stored on the ESP.
 
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on fun experiments: games that run in your browser, served by the ESP.
-- [x] **Tetris:** and Snek, Playable in the *browser* and verified on the physical device with persistent high scores
+- [x] **Tetris** and **Snek**: Playable in the *browser* and verified on the physical device with persistent high scores
 - [x] **MIDI Audio System:** A retro background music player (*soundtrack*) to complement the games
 - [x] **High-Performance Optimization (WebAssembly):** The games are written in C and compiled to WebAssembly, a compact format that browsers run very fast, so they play smoothly without a heavy runtime
 - [ ] **More Games:** Conway's Game of Life and Minesweeper
