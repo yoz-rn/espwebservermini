@@ -97,6 +97,18 @@ $("interval").addEventListener("change", (e) => {
 
 poll();
 
+function nameCell(r) {
+    const td = document.createElement("td");
+    td.textContent = r.name;
+    if (r.user && r.tag) {
+        const badge = document.createElement("span");
+        badge.className = "tag-badge";
+        badge.textContent = r.tag;
+        td.append(" ", badge);
+    }
+    return td;
+}
+
 function render(data) {
     
     const cur = { total: data.total, up: data.up, rt: new Map(data.tasks.map((t) => [t.n, t.rt])) };
@@ -129,8 +141,9 @@ function render(data) {
         const idle = IDLE_NAMES.has(r.name);
         const tr = document.createElement("tr");
         if (idle) tr.className = "idle";
+        if (r.user) tr.classList.add("user-task");
         tr.append(
-            cell(r.name),
+            nameCell(r),
             cell(r.core === -1 ? "any" : (r.core ?? "-"), "num"),
             cell(r.prio, "num"),
             cell(r.state, "st-" + r.state.toLowerCase()),

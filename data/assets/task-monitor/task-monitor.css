@@ -43,8 +43,21 @@
 .tm-table td.warn { color: var(--warn); }
 .tm-table td.crit { color: var(--crit); }
 .tm-table tr.idle { color: var(--text-muted); }
+.tm-table tr.user-task { color: var(--accent); }
 .st-running { color: var(--accent); font-weight: bold; }
 .st-blocked, .st-suspended { color: var(--text-muted); }
 
 .cell-bar { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
 .cell-bar span { width: 6ch; text-align: right; }
+
+.tm-table tr.user-task { color: var(--accent); }
+
+.tag-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0 0.35rem;
+    margin-left: 0.35rem;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    vertical-align: middle;
+}

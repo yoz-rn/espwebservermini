@@ -27,6 +27,7 @@ bool TaskManager::toJson(String& out) {
     uint32_t total = 0;
     UBaseType_t count = uxTaskGetSystemState(_buf, MAX_TASKS, &total);
     if (count == 0) return false;
+    TaskRegistry::reconcile(_buf, count);
 
     multi_heap_info_t heap;
     heap_caps_get_info(&heap, MALLOC_CAP_INTERNAL);
@@ -46,6 +47,8 @@ bool TaskManager::toJson(String& out) {
 
     for (UBaseType_t i = 0; i < count; i++) {
         const TaskStatus_t& s = _buf[i];
+        char tag[TaskRegistry::TAG_LEN];
+        bool isUser = TaskRegistry::lookup(s.xHandle, tag, sizeof(tag));
         JsonObject t = tasks.add<JsonObject>();
         t["n"] = s.xTaskNumber;
         t["name"] = s.pcTaskName;
@@ -56,6 +59,8 @@ bool TaskManager::toJson(String& out) {
         #if CONFIG_FREERTOS_VTASKLIST_INCLUDE_COREID
         t["core"] = (s.xCoreID == tskNO_AFFINITY) ? -1 : (int)s.xCoreID;
         #endif
+        t["user"] = isUser;
+        if (isUser) t["tag"] = tag;
     }
     out = "";
     serializeJson(doc, out);

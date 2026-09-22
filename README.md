@@ -48,10 +48,8 @@ Focus on the user interface and the ability to manage files stored on the ESP.
 
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on fun experiments: games that run in your browser, served by the ESP.
-- [x] **Tetris:** Playable in the *browser* and verified on the physical device
-- [x] **Snek:** Playable in the *browser*, with persistent high scores
+- [x] **Tetris:** and Snek, Playable in the *browser* and verified on the physical device with persistent high scores
 - [x] **MIDI Audio System:** A retro background music player (*soundtrack*) to complement the games
-- [x] **Persistent High Scores:** Scores are saved on the ESP (they survive resets) and shown in the game UI
 - [x] **High-Performance Optimization (WebAssembly):** The games are written in C and compiled to WebAssembly, a compact format that browsers run very fast, so they play smoothly without a heavy runtime
 - [ ] **More Games:** Conway's Game of Life and Minesweeper
 
@@ -117,7 +115,7 @@ Plug in the board, then click these in PlatformIO, **in this order**:
 2. Open your favorite browser and go to:
 
 ```
-    http://192.168.1.254/index.html
+http://192.168.1.254/index.html
 ```
 
 3. You should see the main webpage with its pretty ASCII Art (courtesy to Letterpress from Flatpak, which is unfortunately End of Life package)
@@ -143,7 +141,8 @@ Want to understand it or reuse it in your own project? See [docs/TASK-MONITOR.md
 # KNOWN LIMITATIONS
 
 * Connecting the ESP to your home Wi-Fi (from the Wi-Fi Setup page) and the `esp32.local` address are not fully re-tested after the latest internal rebuild.
-* No multi-day stability test yet. Tested with up to two separate devices at the same time.
+* No multi-day stability test yet. Tested with up to three separate devices at the same time.
+* Website isn't autoscaled on lower resolution system. (NOT Responsive designed)
 
 # CREDITS
 

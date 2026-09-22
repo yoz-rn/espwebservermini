@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <TaskRegistry.h>
 
 class TaskManager {
     public:

@@ -129,16 +129,17 @@
 
 - [ ] Pastikan field `up` terpasang di firmware dan frontend; tambahkan ke contoh JSON di `docs/TASK-MONITOR.md`.
 - [ ] Uji jalur STA lewat hotspot ponsel: provisioning, mDNS tanpa reset, `STA terputus`, kredensial dari NVS setelah cabut daya.
-- [ ] Cek alert rekor Snek (casing `highScore` di `game-shell.js`).
+- [x] Cek alert rekor Snek (casing `highScore` di `game-shell.js`).
 - [ ] `#error` untuk `CONFIG_FREERTOS_VTASKLIST_INCLUDE_COREID`.
 - [ ] Salin nama task ke JSON (atau pastikan perilaku `const char*` di ArduinoJson); `out.reserve(measureJson(doc))`.
 - [ ] Hapus `NVSTest()`; perbaiki typo "Mnguji Koneksi"; pertimbangkan `LittleFS.begin(false)`.
-- [ ] Ganti sisa `Serial.println` di fungsi provisioning dengan `ESP_LOGx`.
 - [ ] `beginSTA()` non-blocking berbasis event.
 - [ ] Pangkas `sdkconfig.defaults` (790+ baris).
 - [ ] Soak test semalam dan atribusi lonjakan `PEAK` (reboot, lalu satu aksi, bandingkan `min`).
 - [ ] Segarkan `roadmap-link.svg` (masih memuat centang lama).
 - [ ] Bersihkan sisa di filesystem image (belum dikonfirmasi): folder legacy `assets/gz/`, `ost-snek.opus.gz` di root, `README.md` dan `myminegw.avif` di `data/`.
+- [ ] Membuat template seperti Task Wrapper atau semacamnya yang memungkinkan Task RTOS yang didefinisikan oleh User bisa terlhat di dashboard monitor
+- [ ] Menampilkan suhu ESP di antarmuka task-monitor
 
 ## Lampiran
 
