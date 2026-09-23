@@ -29,15 +29,16 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 # ROADMAP & MILESTONES
 
 ![ROADMAP_PROJECT](roadmap-link.svg)
+![](/data/myminegw.avif)
 
 This project is being developed in phases. Here is a roadmap of features ranging from those that have been completed to those still in the planning stages:
 
 ### Phase 1: Network Foundation & Core Systems
 Focus on the device’s basic capabilities to connect to a network and be reached from it.
 - [x] **Self-Service Wi-Fi Configuration:** A dedicated *dashboard* page for connecting the ESP to your home Wi-Fi without reflashing. The saved network survives reboots, and the ESP keeps running its own Wi-Fi network at the same time
-- [ ] **Connection Status Indicator:** Show on the *dashboard* whether the ESP is only running its own network, or is also connected to your home Wi-Fi
-- [ ] **Auto-Reconnect:** Periodically retry your saved home Wi-Fi in the background
-- [ ] **Forget Wi-Fi:** Erase the saved Wi-Fi details with a click in the *browser*, no reflash needed
+- [x] **Connection Status Indicator:** Show on the *dashboard* whether the ESP is only running its own network, or is also connected to your home Wi-Fi
+- [x] **Auto-Reconnect:** Periodically retry your saved home Wi-Fi in the background
+- [x] **Forget Wi-Fi:** Erase the saved Wi-Fi details with a click in the *browser*, no reflash needed
 
 ### Phase 2: Storage Management & Visual Interface
 Focus on the user interface and the ability to manage files stored on the ESP.
@@ -68,7 +69,7 @@ Five steps from zero to dashboard. Every command below can be copy-pasted. Somet
 Install these various ~sh*t~
 * [VS Code](https://code.visualstudio.com/) with the [PlatformIO](https://platformio.org/platformio-ide) extension
 * [Git](https://git-scm.com/)
-* [Web Browser](https://www.firefox.com/)
+* Web Browser
 * An ESP32 board and a USB cable that can carry data, not just power (this project uses a DevKitC variant, see the [PlatformIO configuration](/platformio.ini))
 
 ## Step 1: Get the project
@@ -157,8 +158,8 @@ This project won't come this far without the divine blessing of the internet (an
     * [webaudio-tinysynth](https://github.com/g200kg/webaudio-tinysynth) for MIDI Player
 
 * Games
-    * [Tetris](https://github.com/olzhasar/sdl-tetris), written in C and WASM
-    * [Snek](https://github.com/tsoding/snake-c-wasm), written in C and WASM
+    * [Tetris](https://github.com/olzhasar/sdl-tetris), written in C and compiled to WASM
+    * [Snek](https://github.com/tsoding/snake-c-wasm), written in C and compiled to WASM
 
 * Assets
     * [Tetoris MIDI](https://onlinesequencer.net/4435806), originally by Kasane Teto

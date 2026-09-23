@@ -357,7 +357,7 @@ async function loadStorageInfo() {
 }
 
 // Memuat ASCII Art untuk panel System di kiri bawah
-fetch('/assets/file-manager/maria-system.txt')
+fetch('/assets/file-manager/system.txt')
     .then(response => {
         if (!response.ok) throw new Error("Gagal mengambil file");
         return response.text();

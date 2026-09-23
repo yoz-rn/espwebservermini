@@ -14,21 +14,31 @@
     <!-- sidebar -->
 
     <main class="main-content">
-        <div class="tui-panel" data-label="wifi setup">
-            <div class="wifi-container">
-                <img src="/assets/wifi-setup/masha-wifi.svg" class="wifi-vector-img" alt="WiFi Login Vector">
+        <div class="wifi-page">
 
-                <form id="wifi-form">
-                    <label for="ssid">Nama WiFi (SSID)</label>
-                    <input type="text" id="ssid" name="ssid" autocomplete="off" required>
-
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password">
-
-                    <button type="submit">Hubungkan</button>
-                    <div id="status"></div>
-                </form>
+            <div class="tui-panel" data-label="jaringan tersimpan">
+                <div id="saved-network" class="saved-network">
+                    <!-- diisi JS -->
+                </div>
             </div>
+
+            <div class="tui-panel" data-label="tambah jaringan">
+                <div class="wifi-container">
+                    <img src="/assets/wifi-setup/masha-wifi.svg" class="wifi-vector-img" alt="WiFi Login Vector">
+
+                    <form id="wifi-form">
+                        <label for="ssid">WiFi Name (SSID)</label>
+                        <input type="text" id="ssid" name="ssid" autocomplete="off" required>
+
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password">
+
+                        <button type="submit">Connect</button>
+                        <div id="status"></div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </main>
 

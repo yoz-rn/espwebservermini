@@ -68,6 +68,27 @@
     cursor: not-allowed;
 }
 
+#sidebar .sidebar-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;          /* dorong ke bawah nav, sama arah dengan flex column #sidebar */
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+}
+
+#sidebar .sidebar-status .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;   /* dot ikut warna teks, nggak perlu class terpisah */
+    flex-shrink: 0;
+}
+
+#sidebar .sidebar-status.wifi-connected { color: var(--accent); }
+#sidebar .sidebar-status.wifi-ap-only   { color: var(--text-muted); }
+
 .sidebar-dropdown {
     display: flex;
     flex-direction: column;

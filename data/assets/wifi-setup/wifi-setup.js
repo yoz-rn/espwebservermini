@@ -32,6 +32,7 @@ function pollStatus() {
                 statusEl.textContent = data.message;
                 statusEl.style.color = 'var(--text-success, #00ff00)';
                 stopPolling();
+                fetchSavedNetwork();
             } else if (data.status === 'FAILED') {
                 statusEl.textContent = data.message;
                 statusEl.style.color = 'var(--text-error, red)';
@@ -47,6 +48,86 @@ function pollStatus() {
             stopPolling();
         });
 }
+
+const savedNetworkEl = document.getElementById('saved-network');
+
+function renderSavedNetwork(data) {
+    const ssid = data.savedSSID;
+    if (!ssid) {
+        savedNetworkEl.innerHTML = '<div class="network-empty">No Network Saved</div>';
+        return;
+    }
+
+    const connected = data.staConnected;
+    const statusClass = connected ? 'wifi-connected' : 'wifi-ap-only';
+    const statusText = connected ? `Connected (${data.staIP})` : 'Saved, Not connected';
+    const primaryBtn = connected
+        ? '<button id="btn-primary">Disconnect</button>'
+        : '<button id="btn-primary">Connect</button>';
+
+    savedNetworkEl.innerHTML = `
+        <div class="network-entry">
+            <div>
+                <div class="ssid"></div>
+                <div class="network-status ${statusClass}">
+                    <span class="status-dot"></span>
+                    <span>${statusText}</span>
+                </div>
+            </div>
+            <div class="network-actions">
+                ${primaryBtn}
+                <button id="btn-forget" class="btn-forget">Forget</button>
+            </div>
+        </div>
+    `;
+    savedNetworkEl.querySelector('.ssid').textContent = ssid;
+
+    document.getElementById('btn-primary').addEventListener('click', connected ? handleDisconnect : handleReconnect);
+    document.getElementById('btn-forget').addEventListener('click', handleForget);
+}
+
+function handleReconnect(e) {
+    const btn = e.target;
+    btn.disabled = true;
+    btn.textContent = 'Menghubungkan...';
+
+    fetch('/api/wifi-reconnect', { method: 'POST' }).then(() => {
+        let tries = 0;
+        const poll = setInterval(() => {
+            tries++;
+            fetch('/api/wifi-status')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.staConnected || tries >= 8) {   // ~12 detik timeout
+                        clearInterval(poll);
+                        renderSavedNetwork(data);
+                    }
+                });
+        }, 1500);
+    });
+}
+
+function fetchSavedNetwork() {
+    fetch('/api/wifi-status')
+        .then(res => res.json())
+        .then(renderSavedNetwork)
+        .catch(() => {
+            savedNetworkEl.innerHTML = '<div class="network-empty">Gagal memuat status</div>';
+        });
+}
+
+function handleDisconnect() {
+    fetch('/api/wifi-disconnect', { method: 'POST' })
+        .then(() => setTimeout(fetchSavedNetwork, 600));
+}
+
+function handleForget() {
+    if (!confirm('Hapus kredensial WiFi ini? Kamu perlu setup ulang untuk connect lagi.')) return;
+    fetch('/api/wifi-forget', { method: 'POST' })
+        .then(() => setTimeout(fetchSavedNetwork, 600));
+}
+
+fetchSavedNetwork();
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();

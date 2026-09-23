@@ -9,7 +9,7 @@
 
 - Registry task user (`TaskRegistry`) dan wrapper pembuatnya (`monitoredTaskCreate()`) sengaja **dipisah dari `TaskManager`**, bukan digabung.
 - Alasan utama: aturan thread-safety keduanya berlawanan. `TaskManager::_buf` cuma boleh disentuh dari `async_tcp` (aturan lama, sudah didokumentasikan sejak devlog-6). Registry sebaliknya harus bisa ditulis dari task mana pun, kapan pun — jadi butuh spinlock (`portMUX_TYPE`) sendiri, bukan mengikuti model `TaskManager`.
-- Efek samping yang disengaja: `TaskManager` cuma *membaca* registry lewat `TaskRegistry::lookup()`/`reconcile()`; registry sendiri tidak tahu `TaskManager` ada. Arah dependensi satu arah ini yang nanti membuat ekstraksi ke library jadi murah (lihat §6).
+- Efek samping yang disengaja: `TaskManager` cuma *membaca* registry lewat `TaskRegistry::lookup()`/`reconcile()`; registry sendiri tidak tahu `TaskManager` ada. Arah dependensi satu arah ini yang nanti membuat ekstraksi ke library jadi murah.
 
 ---
 

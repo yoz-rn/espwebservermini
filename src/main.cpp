@@ -50,10 +50,10 @@ void checkerTask(void* param) {
 void setup() {
   Serial.begin(115200);
   
-  TaskHandle_t h1;
-  TaskRegistry::monitoredTaskCreate(dummyLoop, "DummyA", 2048, nullptr, 1, &h1, "dummy-a");
-  TaskRegistry::monitoredTaskCreate(dummyLoopSelfDelete, "DummyB", 2048, nullptr, 1, &g_h2, "dummy-b", 1);
-  xTaskCreate(checkerTask, "Checker", 2048, nullptr, 1, nullptr);
+  // TaskHandle_t h1;
+  // TaskRegistry::monitoredTaskCreate(dummyLoop, "DummyA", 2048, nullptr, 1, &h1, "dummy-a");
+  // TaskRegistry::monitoredTaskCreate(dummyLoopSelfDelete, "DummyB", 2048, nullptr, 1, &g_h2, "dummy-b", 1);
+  // xTaskCreate(checkerTask, "Checker", 2048, nullptr, 1, nullptr);
   
   if (!myNetwork.beginAP()) {
     Serial.println("[Main] FATAL: Network gagal, sistem tidak bisa lanjut.");
@@ -66,7 +66,7 @@ void setup() {
     Serial.print("[Network] IP STA (router): ");
     Serial.println(myNetwork.getSTAIP());
   } 
-  else Serial.println("[Network] STA gagal connect, lanjut pakai AP.");
+  else myNetwork.notifyInitialSTAFailure();
 
   if(!LittleFS.begin(true)) {
     Serial.println("[Main] FATAL: LittleFS gagal mount.");

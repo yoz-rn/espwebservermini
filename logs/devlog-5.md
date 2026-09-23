@@ -26,8 +26,6 @@ Temuan lain di README (belum diperbaiki):
 - Langkah "copy the command below" pada bagian build tidak diikuti perintah apa pun.
 - Instruksi `secrets.h` untuk mode STA kemungkinan usang, karena devlog-1 mencatat fallback ke `secrets.h` sudah dihapus dan NVS jadi satu-satunya sumber kredensial STA.
 
-Catatan: `devlog-2.md` tidak masuk konteks otomatis saat sesi dimulai dan harus dibaca terpisah.
-
 ---
 
 ## 2. Integrasi Snek
@@ -205,9 +203,8 @@ Kekurangan yang terlihat: sel tabel tanpa padding (kolom "Suspended" menempel ke
 **Perlu dipastikan sebelum merge ke `main`:**
 - [x] `partitions.csv` dan opsi trace di `sdkconfig.defaults` ter-commit; uji clone bersih ulang setelah semuanya final (satu kali saja, tiap perubahan konfigurasi memicu build penuh ≈ 3 menit).
 - [ ] `sdkconfig.defaults` masih dump penuh (790+ baris), idealnya hanya berisi opsi yang berbeda dari default. Dipangkas di sesi tersendiri.
-- [ ] README: langkah `setup.sh`, catatan partisi, dan tiga temuan di §1.
+- [ ] README: langkah `setup.sh` dan catatan partisi
 - [x] Ruang firmware setelah tabel partisi baru (sebelumnya 86% dari 1 MB), ukur ulang.
-- [ ] Coba esp_littlefs versi lebih baru sebagai eksperimen terpisah.
 
 **Task Monitor:**
 - [x] Konfirmasi UI v2 dan tautan sidebar/dashboard berjalan.

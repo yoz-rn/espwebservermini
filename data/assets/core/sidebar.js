@@ -37,6 +37,11 @@ const sidebarTemplate = `
                 <a href="/assets/game/tetris.html" class="sidebar-item submenu-item" data-path="/assets/game/tetris.html">- Tetris</a>
             </div>
         </div>
+
+        <div id="wifi-status-indicator" class="sidebar-status wifi-ap-only">
+            <span class="status-dot"></span>
+            <span class="status-text">AP Only</span>
+        </div>
     </nav>
 `;
 
@@ -66,3 +71,22 @@ if (sidebarToggle && sidebar) {
         sidebar.classList.toggle('open');
     });
 }
+
+// 5. Status Koneksi WiFi (fetch sekali saat sidebar dimuat)
+function initSidebarWifiStatus() {
+    const wrap = document.getElementById('wifi-status-indicator');
+    const text = wrap?.querySelector('.status-text');
+    if (!wrap || !text) return;
+
+    const setStatus = (connected, ip) => {
+        wrap.className = 'sidebar-status ' + (connected ? 'wifi-connected' : 'wifi-ap-only');
+        text.textContent = connected ? `Connected (${ip})` : 'AP Only';
+    };
+
+    fetch('/api/wifi-status')
+        .then(res => res.json())
+        .then(data => setStatus(data.staConnected, data.staIP))
+        .catch(() => setStatus(false));
+}
+
+initSidebarWifiStatus();
