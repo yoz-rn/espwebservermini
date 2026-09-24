@@ -20,6 +20,11 @@
 
 How to interact with your ESP using webpage, manage its LittleFS file, connect it to the WiFi, monitor its task(s), and play games (yes, with an "s").
 
+|  |  |
+| --- | --- |
+| ![Dashboard](/assets/thumbs/ESP32-Dashboard.avif) | ![File Manager](/assets/thumbs/File-Manager.avif)
+| ![Game of Life](/assets/thumbs/Game-of-Life-ESP32.avif) | ![Tetris](/assets/thumbs/Tetris-ESP32.avif)
+
 ## Tech Stack
 
 ![PlatformIO](https://img.shields.io/badge/PlatformIO-F05F30?style=for-the-badge&logo=PlatformIO&logoColor=white)
@@ -37,8 +42,6 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 ![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
 
 # ROADMAP & MILESTONES
-
-![](/assets/mymine.svg)
 
 This project is being developed in phases. Here is a roadmap of features ranging from those that have been completed to those still in the planning stages:
 
