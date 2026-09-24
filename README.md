@@ -108,6 +108,9 @@ Open a terminal in VS Code (*Terminal → New Terminal*) and run:
 
 This downloads a helper the project needs but can't ship inside the repo. You only do this once. (On Windows, use the *Git Bash* terminal.)
 
+> [!NOTE]
+>  It also automatically sets up Git hooks that ensure your source code remains clean and can be diffed (rather than being compressed) every time you commit.
+
 ## Step 3: Name your ESP's Wi-Fi
 
 ```
@@ -167,9 +170,8 @@ Want to understand it or reuse it in your own project? See [docs/TASK-MONITOR.md
 
 This project won't come this far without the divine blessing of the internet (and a hard pill to swallow, AI)
 
-* UI/UX
-    * [system24](https://betterdiscord.app/themes/system24) theme for BetterDiscord
-    * [spicetify-tui](https://github.com/AvinashReddy3108/spicetify-tui.git) theme for spicetify
+* Interface
+    * [system24](https://betterdiscord.app/themes/system24) and [spicetify-tui](https://github.com/AvinashReddy3108/spicetify-tui.git) for UI/UX Experience
     * [btop](https://github.com/aristocratos/btop) for Task Monitor
 
 * Library

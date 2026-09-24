@@ -21,4 +21,5 @@ else
       https://github.com/joltwallet/esp_littlefs.git "$DEST"
 fi
 
+git config core.hooksPath hooks
 echo "[setup] Done. Next in VS Code: PlatformIO > Build, Upload, Upload Filesystem Image."

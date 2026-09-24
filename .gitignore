@@ -11,6 +11,10 @@ assets/*
 logs/*.log
 data/assets/gz/*
 backup
+data/webapp/**/*.gz
+
+!data/webapp/assets/core/jszip.min.js.gz
+!data/webapp/assets/core/webaudio-tinysynth.js.gz
 
 components/
 managed_components/
