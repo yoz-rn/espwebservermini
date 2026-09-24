@@ -7,7 +7,6 @@
 
 # Project dependencies and local configurations
 include/secrets.h
-git_sync.sh
 assets/*
 logs/*.log
 data/assets/gz/*

@@ -1,4 +1,7 @@
 Bundle of WASM Project (Hopefully, semua nya muat ke flash esp)
+This folder is a mess because it's often single use, so yeah
+
+If you want to develop the game experience, better do it here first
 
 ```
 
