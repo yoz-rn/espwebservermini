@@ -22,14 +22,23 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 
 ## Tech Stack
 
-* PlatformIO
-* WebAssembly
-* Arduino + ESP-IDF (Hybrid Build)
+![PlatformIO](https://img.shields.io/badge/PlatformIO-F05F30?style=for-the-badge&logo=PlatformIO&logoColor=white)
+![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=for-the-badge&logo=WebAssembly&logoColor=white)
+![Arduino](https://img.shields.io/badge/Arduino_&_ESP--IDF-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
+
+<!-- Firmware & Core -->
+![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![FreeRTOS](https://img.shields.io/badge/FreeRTOS-20232A?style=for-the-badge&logo=freertos&logoColor=20B2AA)
+
+<!-- Frontend & Interface -->
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
 
 # ROADMAP & MILESTONES
 
-![ROADMAP_PROJECT](roadmap-link.svg)
-![](/assets/mymine.png)
+![](/assets/mymine.svg)
 
 This project is being developed in phases. Here is a roadmap of features ranging from those that have been completed to those still in the planning stages:
 
@@ -50,9 +59,10 @@ Focus on the user interface and the ability to manage files stored on the ESP.
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on fun experiments: games that run in your browser, served by the ESP.
 - [x] **Tetris** and **Snek**: Playable in the *browser* and verified on the physical device with persistent high scores
+- [x] **Conway's Game of Life**: Comes with presets, generation counts, and mini track player
+- [ ] **Battleship**: Coming soon
 - [x] **MIDI Audio System:** A retro background music player (*soundtrack*) to complement the games
 - [x] **High-Performance Optimization (WebAssembly):** The games are written in C and compiled to WebAssembly, a compact format that browsers run very fast, so they play smoothly without a heavy runtime
-- [ ] **More Games:** Conway's Game of Life and Minesweeper
 
 ### Phase 4: Monitoring & Tooling
 Focus on observing the device and making development easier.
@@ -61,7 +71,7 @@ Focus on observing the device and making development easier.
 - [ ] **Local Test Environment:** A fake 1 MB file storage on your computer, so the web pages can be tested without the physical ESP
 
 ### Phase 5: Your Turn!
-- [ ] **Web optimization**: I'm not a decent web dev, so mostly the webpage is vibe-coded. It's your turn to optimize it smoothly to run on any machine, especially the 'legacy' ones
+- [ ] **Web optimization**: I'm not a decent web dev, the webpage is vibe-coded with some references here and there. It's your turn to optimize it smoothly to run on any machine, especially the 'legacy' ones
 - [ ] **Hardware optimization**: Search for any memory leaks, and most of all: Give it a heavy runtime test, because this project is developed **WITHOUT** any load
 - [ ] **Security concerns**: Test the web for any security leaks, like SQL Injection, XSS something something, and whatever that might poison the esp via the web
 
@@ -161,15 +171,22 @@ This project won't come this far without the divine blessing of the internet (an
 
 * Library
     * [webaudio-tinysynth](https://github.com/g200kg/webaudio-tinysynth) for MIDI Player
+    * [jszip](https://stuk.github.io/jszip/) for recursive download
 
 * Games
     * [Tetris](https://github.com/olzhasar/sdl-tetris), written in C and compiled to WASM
     * [Snek](https://github.com/tsoding/snake-c-wasm), written in C and compiled to WASM
+    * Conway's Game of Life
+        * https://github.com/Rajat-malhotra0/game-of-life
+        * https://github.com/iximiuz/golife.c
+        * https://ulysse.md/2021/09/26/Conway%27s-Game-of-Life-(in-WebAssembly-C).html
+
 
 * Assets
     * [Tetoris MIDI](https://onlinesequencer.net/4435806), originally by Kasane Teto
     * [Snek MIDI](https://onlinesequencer.net/1175161), originally known as Levan Polkka
 
 * Tools
+    * [ClaudeAI](https://claude.ai/)
     * https://pngtosvg.com/
     * https://www.asciiart.eu/image-to-ascii
