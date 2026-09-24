@@ -25,6 +25,8 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 | ![Dashboard](/assets/thumbs/ESP32-Dashboard.avif) | ![File Manager](/assets/thumbs/File-Manager.avif)
 | ![Game of Life](/assets/thumbs/Game-of-Life-ESP32.avif) | ![Tetris](/assets/thumbs/Tetris-ESP32.avif)
 
+![Task Monitor](/assets/thumbs/Task-Monitor-ESP32.avif)
+
 ## Tech Stack
 
 ![PlatformIO](https://img.shields.io/badge/PlatformIO-F05F30?style=for-the-badge&logo=PlatformIO&logoColor=white)
@@ -110,8 +112,14 @@ This downloads a helper the project needs but can't ship inside the repo. You on
 
 ## Step 3: Name your ESP's Wi-Fi
 
-```
+For Bash or Powershell
+```bash
 cp include/secrets.EXAMPLES.h include/secrets.h
+```
+
+For cmd
+```cmd
+copy include\secrets.EXAMPLES.h include\secrets.h
 ```
 
 Open [`include/secrets.h`](/include/secrets.h) and choose a name and a password (**at least 8 characters**). The ESP creates its own Wi-Fi network with these, like a tiny router, and you'll connect to it in Step 5. Always edit `secrets.h`, never the EXAMPLES file.
@@ -120,7 +128,7 @@ Open [`include/secrets.h`](/include/secrets.h) and choose a name and a password 
 
 Plug in the board, then click these in PlatformIO, **in this order**:
 
-1. **Build**: the first time takes a few minutes. That's normal.
+1. **Build**: the first time takes a *few* minutes. That's normal.
 2. **Upload**: sends the program to the ESP.
 3. **Upload Filesystem Image** (PlatformIO sidebar → *Platform*): sends the web pages.
 
