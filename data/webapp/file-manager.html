@@ -32,6 +32,10 @@
                     <button id="btn-mkdir" class="action-btn" title="Buat Folder">
                         <span class="icon" style="--icon-url: url('/assets/file-manager/icons/mkdir.svg')"></span>
                     </button>
+
+                    <button id="btn-backup" class="action-btn" title="Download Backup (non-webapp)">
+                        <span class="icon" style="--icon-url: url('/assets/file-manager/icons/download.svg')"></span>
+                    </button>
                 </div>
                 <span id="current-path">/</span>
             </div>
@@ -85,6 +89,7 @@
 
     <!-- Memanggil Script -->
     <script src="assets/core/sidebar.js"></script>
+    <script src="assets/core/jszip.min.js"></script>
     <script src="assets/file-manager/file-manager.js"></script>
 </body>
 </html>

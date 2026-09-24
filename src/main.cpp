@@ -80,7 +80,7 @@ void setup() {
   }
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(LittleFS, "/index.html", "text/html");
+    request->send(LittleFS, "/webapp/index.html", "text/html");
   }
   ); 
     
@@ -91,7 +91,7 @@ void setup() {
   registerWifiRoutes(server, myNetwork);
   registerFileRoutes(server, myFile);
   
-  server.serveStatic("/", LittleFS, "/");
+  server.serveStatic("/", LittleFS, "/webapp/");
   server.begin();
 
   Serial.println("[Server] HTTP Server berjalan di latar belakang.");

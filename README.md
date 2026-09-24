@@ -29,7 +29,7 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 # ROADMAP & MILESTONES
 
 ![ROADMAP_PROJECT](roadmap-link.svg)
-![](/data/myminegw.avif)
+![](/assets/mymine.png)
 
 This project is being developed in phases. Here is a roadmap of features ranging from those that have been completed to those still in the planning stages:
 
@@ -45,7 +45,7 @@ Focus on the user interface and the ability to manage files stored on the ESP.
 - [x] **TUI-Style Interface (Terminal UI):** A lightweight, responsive, retro *web* interface that looks like a terminal, with a shared sidebar and customizable colors
 - [x] **Internal File Manager:** A visual interface for browsing, previewing, uploading, creating folders, renaming, and deleting files on the ESP straight from the *browser*, with basic protection against tricky file paths (like `../`)
 - [x] **Storage Capacity Information:** A visual indicator on the *dashboard* showing how much storage space is left
-- [ ] **File Manager Hardening:** A list of protected files that can't be deleted by accident, plus clearer error messages when a delete fails
+- [x] **File Manager Hardening:** A list of protected files that can't be deleted by accident, plus clearer error messages when a delete fails
 
 ### Phase 3: Interactive Experiments & Entertainment
 Focus on fun experiments: games that run in your browser, served by the ESP.
@@ -59,6 +59,11 @@ Focus on observing the device and making development easier.
 - [x] **Task Monitor:** A btop-style *browser* page showing every task running on the ESP: how busy each task and each CPU core is, its state, priority, which core it runs on, and how much of its working memory (stack) is left. It needs the special build setup from Getting Started, see [docs/TASK-MONITOR.md](docs/TASK-MONITOR.md) for details
 - [x] **Memory Monitor:** How much memory is free, the lowest it has been since boot, and the total size
 - [ ] **Local Test Environment:** A fake 1 MB file storage on your computer, so the web pages can be tested without the physical ESP
+
+### Phase 5: Your Turn!
+- [ ] **Web optimization**: I'm not a decent web dev, so mostly the webpage is vibe-coded. It's your turn to optimize it smoothly to run on any machine, especially the 'legacy' ones
+- [ ] **Hardware optimization**: Search for any memory leaks, and most of all: Give it a heavy runtime test, because this project is developed **WITHOUT** any load
+- [ ] **Security concerns**: Test the web for any security leaks, like SQL Injection, XSS something something, and whatever that might poison the esp via the web
 
 # GETTING STARTED
 

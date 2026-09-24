@@ -146,6 +146,12 @@ label.action-btn {
     display: flex;
 }
 
+.action-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Panel tabel file */
 .fm-table-panel {
     max-height: 400px;

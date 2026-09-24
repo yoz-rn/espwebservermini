@@ -30,15 +30,24 @@ document.getElementById("upload-input").addEventListener("change", async (event)
         }
 
         if (!result.ok) {
-            document.getElementById("status-message").textContent = "upload gagal";
+            document.getElementById("status-message").textContent = result.message || "upload gagal";
             return;
         }
 
         await loadFiles(currentPath);
     } finally {
-        setBusy(false, "ready");
+        setBusy(false, "when yh gw");
     }
 });
+
+async function extractErrorMessage(res, fallback) {
+    try {
+        const data = await res.json();
+        return data.message || fallback;
+    } catch {
+        return fallback;
+    }
+}
 
 function setBusy(state, message) {
     isBusy = state;
@@ -53,6 +62,12 @@ function getParentPath(path) {
     const lastSlash = trimmed.lastIndexOf("/");
 
     return lastSlash <= 0 ? "/" : trimmed.substring(0, lastSlash);
+}
+
+const PROTECTED_ROOT = "/webapp";
+
+function isProtectedPath(path) {
+    return path === PROTECTED_ROOT || path.startsWith(PROTECTED_ROOT + "/");
 }
 
 function isImagePath(path) {
@@ -77,7 +92,7 @@ async function loadFiles(path = "/") {
         document.getElementById("current-path").textContent = path;
         renderFileTable(files, path);
     } finally {
-        setBusy(false, "ready");
+        setBusy(false, "when yh gw");
     }
 }
 
@@ -106,7 +121,9 @@ function renderFileTable(files, path) {
             row.dataset.isDir = file.isDir;
             tbody.appendChild(row);
         });
-}
+    document.getElementById("btn-delete").disabled = true;
+    document.getElementById("btn-rename").disabled = true;
+    }
 
 async function loadPreview(path) {
     if (isBusy) return;
@@ -139,7 +156,7 @@ async function loadPreview(path) {
         pre.textContent = text;
         preview.appendChild(pre);
     } finally {
-        setBusy(false, "ready");
+        setBusy(false, "when yh gw");
     }
 }
 
@@ -160,6 +177,10 @@ document.querySelector("#file-table tbody").addEventListener("click", (event) =>
 
     const isDir = row.dataset.isDir === "true";
     const path = row.dataset.path;
+    
+    const isProtected = isProtectedPath(path);
+    document.getElementById("btn-delete").disabled = isProtected;
+    document.getElementById("btn-rename").disabled = isProtected;
 
     if (isDir) {
         document.getElementById("preview-content").innerHTML =
@@ -198,6 +219,7 @@ async function uploadFile(file, path) {
     return { ok: false, cancelled: true };
 }
 
+// SESUDAH
 async function sendUpload(file, path, onConflict) {
     let url = `${API_BASE}?path=${encodeURIComponent(path)}`;
     if (onConflict) url += `&onConflict=${onConflict}`;
@@ -207,7 +229,8 @@ async function sendUpload(file, path, onConflict) {
         body: file
     });
 
-    return { ok: res.ok, status: res.status };
+    const message = res.ok ? null : await extractErrorMessage(res, "upload gagal");
+    return { ok: res.ok, status: res.status, message };
 }
 
 document.getElementById("btn-delete").addEventListener("click", async () => {
@@ -229,13 +252,9 @@ document.getElementById("btn-delete").addEventListener("click", async () => {
             method: "DELETE"
         });
 
-        if (res.status === 409) {
-            document.getElementById("status-message").textContent = "folder tidak kosong, hapus isinya dulu";
-            return;
-        }
-
         if (!res.ok) {
-            document.getElementById("status-message").textContent = "gagal menghapus";
+            const msg = await extractErrorMessage(res, "gagal menghapus");
+            document.getElementById("status-message").textContent = msg;
             return;
         }
 
@@ -244,7 +263,7 @@ document.getElementById("btn-delete").addEventListener("click", async () => {
         const currentPath = document.getElementById("current-path").textContent;
         await loadFiles(currentPath);
     } finally {
-        setBusy(false, "ready");
+        setBusy(false, "when yh gw");
     }
 });
 
@@ -271,19 +290,15 @@ document.getElementById("btn-mkdir").addEventListener("click", async () => {
             method: "POST"
         });
 
-        if (res.status === 409) {
-            document.getElementById("status-message").textContent = "folder sudah ada";
-            return;
-        }
-
         if (!res.ok) {
-            document.getElementById("status-message").textContent = "gagal membuat folder";
+            const msg = await extractErrorMessage(res, "gagal membuat folder");
+            document.getElementById("status-message").textContent = msg;
             return;
         }
 
         await loadFiles(currentPath);
     } finally {
-        setBusy(false, "ready");
+        setBusy(false, "when yh gw");
     }
 });
 
@@ -318,13 +333,9 @@ document.getElementById("btn-rename").addEventListener("click", async () => {
             { method: "PATCH" }
         );
 
-        if (res.status === 409) {
-            document.getElementById("status-message").textContent = "nama sudah dipakai";
-            return;
-        }
-
         if (!res.ok) {
-            document.getElementById("status-message").textContent = "gagal rename";
+            const msg = await extractErrorMessage(res, "gagal rename");
+            document.getElementById("status-message").textContent = msg;
             return;
         }
 
@@ -333,7 +344,7 @@ document.getElementById("btn-rename").addEventListener("click", async () => {
         const currentPath = document.getElementById("current-path").textContent;
         await loadFiles(currentPath);
     } finally {
-        setBusy(false, "ready");
+        setBusy(false, "when yh gw");
     }
 });
 
@@ -354,6 +365,75 @@ async function loadStorageInfo() {
     } catch (err) {
         storageEl.textContent = "info penyimpanan tidak tersedia";
     }
+}
+
+document.getElementById("btn-backup").addEventListener("click", async () => {
+    if (isBusy) return;
+
+    if (typeof JSZip === "undefined") {
+        document.getElementById("status-message").textContent = "JSZip belum termuat";
+        return;
+    }
+
+    setBusy(true, "menyiapkan backup...");
+
+    try {
+        const zip = new JSZip();
+        const fileCount = await addFilesToZip("/", zip);
+
+        if (fileCount === 0) {
+            document.getElementById("status-message").textContent = "tidak ada file untuk di-backup";
+            return;
+        }
+
+        setBusy(true, `mengompres ${fileCount} file...`);
+        const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const a = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = `backup-${timestamp}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        document.getElementById("status-message").textContent = `backup selesai (${fileCount} file)`;
+    } catch (err) {
+        document.getElementById("status-message").textContent = "backup gagal: " + err.message;
+    } finally {
+        setBusy(false, "ready");
+    }
+});
+
+// Rekursif list -> skip /webapp -> fetch tiap file -> masukin ke folder zip
+async function addFilesToZip(dirPath, zipFolder) {
+    const res = await fetch(`${API_BASE}?path=${encodeURIComponent(dirPath)}`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`gagal list ${dirPath}`);
+
+    const entries = await res.json();
+    let count = 0;
+
+    for (const entry of entries) {
+        if (isProtectedPath(entry.path)) continue; // skip seluruh isi /webapp, gak perlu di-list lagi
+
+        if (entry.isDir) {
+            const subFolder = zipFolder.folder(entry.name);
+            count += await addFilesToZip(entry.path, subFolder);
+            continue;
+        }
+
+        setBusy(true, `mengunduh ${entry.path}...`);
+        const fileRes = await fetch(`${API_BASE}/view?path=${encodeURIComponent(entry.path)}`, { cache: "no-store" });
+        if (!fileRes.ok) continue; // 1 file gagal, jangan gagalin seluruh backup
+
+        const blob = await fileRes.blob();
+        zipFolder.file(entry.name, blob);
+        count++;
+    }
+
+    return count;
 }
 
 // Memuat ASCII Art untuk panel System di kiri bawah

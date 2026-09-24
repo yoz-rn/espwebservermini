@@ -64,6 +64,16 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
             return;
         }
 
+        if (fileManager.isProtectedPath(oldPath)) {
+            request->send(403, APP_JSON, buildStatusJson(false, "Protected: cannot rename/move file inside /webapp: " + oldPath));
+            return;
+        }
+
+        if (fileManager.isProtectedPath(newPath)) {
+            request->send(403, APP_JSON, buildStatusJson(false, "Protected: cannot move/rename file into /webapp: " + newPath));
+            return;
+        }
+
         if (fileManager.fileExists(newPath) || fileManager.isDirectory(newPath)) {
             request->send(400, APP_JSON, buildStatusJson(false, "Target already exists: " + newPath));
             return;
@@ -85,6 +95,11 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
 
         if (!isPathSafe(path)) {
             request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
+            return;
+        }
+
+        if (fileManager.isProtectedPath(path)) {
+            request->send(403, APP_JSON, buildStatusJson(false, "Protected: cannot create directory inside /webapp: " + path));
             return;
         }
 
@@ -130,6 +145,26 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
                 if (!isPathSafe(path)) {
                     request->send(400, APP_JSON, buildStatusJson(false, "invalid path"));
                     return;
+                }
+
+                // /webapp is a protected, isolated static-asset tree: new files
+                // and duplicates cannot be created there (only overwrite of an
+                // existing file, i.e. an "update", is allowed). New/expanded
+                // assets must go through a filesystem image reflash instead.
+                if (fileManager.isProtectedPath(path)) {
+                    String onConflictCheck = request->hasParam("onConflict") ? request->getParam("onConflict")->value() : "";
+
+                    if (!fileManager.fileExists(path)) {
+                        request->send(403, APP_JSON, buildStatusJson(false, "Protected: cannot create new file inside /webapp: " + path));
+                        return;
+                    }
+
+                    if (onConflictCheck == "duplicate") {
+                        request->send(403, APP_JSON, buildStatusJson(false, "Protected: cannot duplicate file inside /webapp: " + path));
+                        return;
+                    }
+                    // existing file + no onConflict, or onConflict=overwrite:
+                    // falls through to the normal conflict/overwrite flow below.
                 }
 
                 if (total > MAX_UPLOAD_SIZE) {
@@ -222,25 +257,30 @@ void registerFileRoutes(AsyncWebServer& server, FileManager& fileManager) {
             return;
         }
 
-        if (fileManager.isDirectory(path)) {
-            if (!fileManager.isDirectoryEmpty(path)) {
-                request->send(409, APP_JSON, buildStatusJson(false, "Directory not empty"));
-                return;
-            }
-            bool ok = fileManager.deleteDirectory(path);
-            request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "Directory Deleted: " + path
-                                                                                     : "Failed to delete directory"));
+        if (fileManager.isProtectedPath(path)) {
+            request->send(403, APP_JSON, buildStatusJson(false, "Protected: cannot delete file/folder inside /webapp: " + path));
             return;
         }
 
-        if (!fileManager.fileExists(path)) {
-            request->send(404, APP_JSON, buildStatusJson(false, "File not found: " + path));
+        if (!fileManager.fileExists(path) && !fileManager.isDirectory(path)) {
+            request->send(404, APP_JSON, buildStatusJson(false, "Path not found: " + path));
+            return;
+        }
+
+        if (fileManager.isDirectory(path)) {
+            if (!fileManager.isDirectoryEmpty(path)) {
+                request->send(409, APP_JSON, buildStatusJson(false, "Directory not empty, delete its contents first: " + path));
+                return;
+            }
+            bool ok = fileManager.deleteDirectory(path);
+            request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "Directory deleted: " + path
+                                                                                     : "Failed to delete directory (filesystem error): " + path));
             return;
         }
 
         bool ok = fileManager.deleteFile(path);
         request->send(ok ? 200 : 500, APP_JSON, buildStatusJson(ok, ok ? "File deleted: " + path
-                                                                       : "Failed to delete file"));
+                                                                       : "Failed to delete file (filesystem error): " + path));
 
     });
 

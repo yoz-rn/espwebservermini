@@ -1,5 +1,16 @@
 #include "FileManager.h"
 
+namespace {
+    // Root of the isolated static web asset tree (mounted from data/webapp/
+    // at build time). Anything inside this prefix is considered protected.
+    const char* PROTECTED_PREFIX = "/webapp";
+}
+
+bool FileManager::isProtectedPath(PATH) {
+    String prefix = String(PROTECTED_PREFIX) + "/";
+    return path == PROTECTED_PREFIX || path.startsWith(prefix);
+}
+
 bool FileManager::listDirectory(PATH, JsonArray& out) {
     File root = LittleFS.open(path);
 

@@ -32,6 +32,10 @@ class FileManager {
         bool renamePath(const String& oldPath, const String& newPath);
         bool makeDirectory(PATH);
 
+        // Protected Path (static webapp assets under /webapp cannot be
+        // deleted, renamed/moved, or have new files created inside them)
+        bool isProtectedPath(PATH);
+
         bool getStorageBytes(size_t& total, size_t& used);
         bool getStorageInfo(JsonObject& out);
 
