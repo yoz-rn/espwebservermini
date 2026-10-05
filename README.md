@@ -1,4 +1,3 @@
-# PROJECT HEADER
 
 ```
                                                      █████                                                                                ███              ███ 
@@ -29,6 +28,7 @@ How to interact with your ESP using webpage, manage its LittleFS file, connect i
 
 ## Tech Stack
 
+<!-- General -->
 ![PlatformIO](https://img.shields.io/badge/PlatformIO-F05F30?style=for-the-badge&logo=PlatformIO&logoColor=white)
 ![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=for-the-badge&logo=WebAssembly&logoColor=white)
 ![Arduino](https://img.shields.io/badge/Arduino_&_ESP--IDF-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
@@ -65,17 +65,17 @@ Focus on the user interface and the ability to manage files stored on the ESP.
 Focus on fun experiments: games that run in your browser, served by the ESP.
 - [x] **Tetris** and **Snek**: Playable in the *browser* and verified on the physical device with persistent high scores
 - [x] **Conway's Game of Life**: Comes with presets, generation counts, and mini track player
-- [ ] **Battleship**: Coming soon
 - [x] **MIDI Audio System:** A retro background music player (*soundtrack*) to complement the games
 - [x] **High-Performance Optimization (WebAssembly):** The games are written in C and compiled to WebAssembly, a compact format that browsers run very fast, so they play smoothly without a heavy runtime
+- [ ] **Battleship**: Coming soon
 
 ### Phase 4: Monitoring & Tooling
 Focus on observing the device and making development easier.
 - [x] **Task Monitor:** A btop-style *browser* page showing every task running on the ESP: how busy each task and each CPU core is, its state, priority, which core it runs on, and how much of its working memory (stack) is left. It needs the special build setup from Getting Started, see [docs/TASK-MONITOR.md](docs/TASK-MONITOR.md) for details
 - [x] **Memory Monitor:** How much memory is free, the lowest it has been since boot, and the total size
-- [ ] **Local Test Environment:** A fake 1 MB file storage on your computer, so the web pages can be tested without the physical ESP
 
 ### Phase 5: Your Turn!
+- [ ] **Local Test Environment:** A fake 1 MB file storage on your computer, so the web pages can be tested without the physical ESP
 - [ ] **Web optimization**: I'm not a decent web dev, the webpage is vibe-coded with some references here and there. It's your turn to optimize it smoothly to run on any machine, especially the 'legacy' ones
 - [ ] **Hardware optimization**: Search for any memory leaks, and most of all: Give it a heavy runtime test, because this project is developed **WITHOUT** any load
 - [ ] **Security concerns**: Test the web for any security leaks, like SQL Injection, XSS something something, and whatever that might poison the esp via the web
@@ -112,6 +112,8 @@ This downloads a helper the project needs but can't ship inside the repo. You on
 
 ## Step 3: Name your ESP's Wi-Fi
 
+In this step, you have to enter your ESP credentials through the `secrets.h` file. It is a simple copy paste and rename operation.
+
 For Bash or Powershell
 ```bash
 cp include/secrets.EXAMPLES.h include/secrets.h
@@ -128,12 +130,12 @@ Open [`include/secrets.h`](/include/secrets.h) and choose a name and a password 
 
 Plug in the board, then click these in PlatformIO, **in this order**:
 
-1. **Build**: the first time takes a *few* minutes. That's normal.
-2. **Upload**: sends the program to the ESP.
+1. **Build** (✓) : the first time takes a *few* minutes. That's normal.
+2. **Upload** (➛) : sends the program to the ESP.
 3. **Upload Filesystem Image** (PlatformIO sidebar → *Platform*): sends the web pages.
 
 > [!CAUTION]
-> The web pages live in the `data` folder, and it has to stay under ~1.375 MiB (1441792 bytes) or the last upload will fail. That's a storage limit of the ESP32, at least on my board anyway.
+> The web pages live in the [`/data/webapp`] folder, and it has to stay under ~1.375 MiB (1441792 bytes) or the last upload will fail. That's a storage limit of the ESP32, at least on my board anyway.
 > I haven't developed the SD Card variant because of, well, budget
 
 ## Step 5: Open the dashboard
@@ -150,7 +152,7 @@ http://192.168.1.254/index.html
 ## Navigating the webpage
 
 > [!IMPORTANT]
-> Please aware that these webpage uses a highly compressed assets, so it is quite resource intense on your browser. I'll try to optimize it
+> Please aware that these webpage uses a highly compressed assets, so it is quite resource intense on your browser.
 
 1. After accessing the dashboard, scroll down slightly to see the feature, which is
     * Wi-Fi Landing Page
@@ -167,17 +169,17 @@ Want to understand it or reuse it in your own project? See [docs/TASK-MONITOR.md
 
 # KNOWN LIMITATIONS
 
-* Connecting the ESP to your home Wi-Fi (from the Wi-Fi Setup page) and the `esp32.local` address are not fully re-tested after the latest internal rebuild.
-* No multi-day stability test yet. Tested with up to three separate devices at the same time.
+* No multi-day stability test yet.
 * Website isn't autoscaled on lower resolution system. (NOT Responsive designed)
+* No recorded Windows platform development
+* The *Game* Feature is the most niche feature tbh. You can remove it manually by deleting the `data/webapp/assets/game` folder if you don't don't need it
 
 # CREDITS
 
 This project won't come this far without the divine blessing of the internet (and a hard pill to swallow, AI)
 
-* UI/UX
-    * [system24](https://betterdiscord.app/themes/system24) theme for BetterDiscord
-    * [spicetify-tui](https://github.com/AvinashReddy3108/spicetify-tui.git) theme for spicetify
+* Interface
+    * [system24](https://betterdiscord.app/themes/system24) and [spicetify-tui](https://github.com/AvinashReddy3108/spicetify-tui.git) for UI/UX experience
     * [btop](https://github.com/aristocratos/btop) for Task Monitor
 
 * Library
